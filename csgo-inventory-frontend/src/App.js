@@ -1,24 +1,14 @@
-import logo from './logo.svg';
 import './App.css';
+import InventoryColumns from './components/inventoryColumns';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="flex justify-center h-screen bg-gray-900 overflow-hidden">
+      <div className="w-3/4 bg-gray-800 p-4 my-10 rounded-lg shadow-lg">
+        <InventoryColumns />
+      </div>
     </div>
+
   );
 }
 
