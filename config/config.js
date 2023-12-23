@@ -1,3 +1,4 @@
+module.exports =
 {
     "url": "http://localhost",
     "api_version": "/v1",
