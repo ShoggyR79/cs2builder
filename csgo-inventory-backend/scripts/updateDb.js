@@ -8,7 +8,16 @@ const updateDb = async () => {
         response = await response.json();
         const items_list = response['items_list'];
         for(const [name, it] of Object.entries(items_list)){
-            let data = {'name': name};
+            let data = {
+                'name': name
+                    .replace('&#39Blueberries&#39 ', '')
+                    .replace(' (Factory New)', '')
+                    .replace(' (Field-Tested)', '')
+                    .replace(' (Minimal Wear)', '')
+                    .replace(' (Well-Worn)', '')
+                    .replace(' (Battle-Scarred)', '')
+            };
+            data['name_normalized'] = name.replace(/\W/g, '').toLowerCase();
             data['type'] = it['type'];
             if(data['type'] !== 'Weapon' && data['type'] !== null && data['type'] !== 'Gloves') {
                 continue;
@@ -26,6 +35,8 @@ const updateDb = async () => {
 
             if(data['type'] === 'Weapon') {
                 data['weapon_type'] = it['weapon_type'];
+                // default skin = "Not Painted"
+                data['exterior'] = it['exterior'];
                 if(data['weapon_type'] === "Knife") {
                     data['specific_type'] = it['knife_type'];
                 } else {
@@ -43,14 +54,15 @@ const updateDb = async () => {
             } else {
                 for(const [k, v] of Object.entries(it['price'])){
                     data['price'] = v['average'];
+                    break;
                 }
-                let item = await Item.findOneAndUpdate(
-                    { classid: data['classid'] },
-                    { $set: data },
-                    { new: true, upsert: true }
-                );
             }
-            
+            let item = await Item.findOneAndUpdate(
+                { classid: data['classid'] },
+                { $set: data },
+                { new: true, upsert: true }
+            );
+            console.log('Updated');
         }
     } catch (err) {
         console.log(err);
