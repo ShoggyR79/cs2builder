@@ -6,7 +6,7 @@ import cron from 'node-cron';
 import updateDb from './scripts/updateDb.js'
 
 // Import configuration
-import config from '../config/config.js';
+const config = require('../config/config.js');
 
 const app = express();
 
@@ -33,7 +33,7 @@ cron.schedule('0 */12 * * *', () => {
 
 // Define your routes and API endpoints here
 // Example route:
-require("./api/index.js")(app);
+require("./api/index.cjs")(app);
 // Listen on the configured port
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
