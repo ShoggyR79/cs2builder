@@ -1,7 +1,9 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import cron from 'node-cron';
+import updateDb from './scripts/updateDb.js'
 
 // Import configuration
 const config = require('../config/config.json');
@@ -23,6 +25,11 @@ mongoose.connect(config.mongodb, { useNewUrlParser: true, useUnifiedTopology: tr
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
   });
+
+// schedule db update every 12 hours
+cron.schedule('0 */12 * * *', () => {
+  updateDb();
+});
 
 // Define your routes and API endpoints here
 // Example route:
