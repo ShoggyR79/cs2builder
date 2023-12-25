@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 // Import configuration
-const config = require('../config/config.json');
+const config = require('../config/config.js');
 
 const app = express();
 
@@ -26,7 +26,7 @@ mongoose.connect(config.mongodb, { useNewUrlParser: true, useUnifiedTopology: tr
 
 // Define your routes and API endpoints here
 // Example route:
-require("./api/index.js")(app);
+require("./api/index.cjs")(app);
 // Listen on the configured port
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
