@@ -70,4 +70,4 @@ const updateDb = async () => {
 }
 
 
-export default updateDb();
+export default updateDb;

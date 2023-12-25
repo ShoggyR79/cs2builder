@@ -6,7 +6,7 @@ import cron from 'node-cron';
 import updateDb from './scripts/updateDb.js'
 
 // Import configuration
-const config = require('../config/config.json');
+import config from '../config/config.js';
 
 const app = express();
 
