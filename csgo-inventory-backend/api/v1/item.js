@@ -6,6 +6,7 @@ module.exports = (app) => {
     // Schema for item info validation
     const schema = Joi.object({
         name: Joi.string().required(),
+        name_normalized: Joi.string().required(),
         classid: Joi.string().required(),
         icon_url: Joi.string().required(),
         icon_url_large: Joi.string().required(),
@@ -15,12 +16,14 @@ module.exports = (app) => {
         specific_type: Joi.string(),
         rarity: Joi.string().required(),
         rarity_color: Joi.string().required(),
-        price: Joi.number()
+        price: Joi.number(),
+        exterior: Joi.string()
     });
 
     /**
      * Create a new item
      * @param {req.body.name} Name of the item
+     * @param {req.body.name_normalized} Name of the item normalized
      * @param {req.body.classid} Unique identifier for the item
      * @param {req.body.icon_url} URL for the item's icon
      * @param {req.body.icon_url_large} URL for the item's larger icon
@@ -29,7 +32,7 @@ module.exports = (app) => {
      * @param {req.body.specific_type} The exact type of weapon like 'USP-S', 'AK-47'. Relevant for Guns and Knives
      * @param {req.body.rarity} Rarity level of the item
      * @param {req.body.rarity_color} Color associated with the item's rarity hex string
-     * @param {req.body.price} Current market price of the item
+     * @param {req.body.exterior} Exterior of the item
      */
     app.post("/v1/item", async (req, res) => {
         let data;
