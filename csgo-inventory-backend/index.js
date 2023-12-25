@@ -1,12 +1,12 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const cron = require('node-cron');
-const updateDb = require('./scripts/updateDb.cjs');
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import cron from 'node-cron';
+import updateDb from './scripts/updateDb.cjs'
 
 // Import configuration
-const config = require('../config/config.js');
+import config from '../config/config.js';
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Connect to MongoDB using the URI from config
-mongoose.connect(config.mongodb)
+mongoose.connect(config.mongodb, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -33,7 +33,7 @@ cron.schedule('0 */12 * * *', () => {
 
 // Define your routes and API endpoints here
 // Example route:
-require("./api/index.cjs")(app);
+require("./api/index.js")(app);
 // Listen on the configured port
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

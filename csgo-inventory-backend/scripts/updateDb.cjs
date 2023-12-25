@@ -1,6 +1,6 @@
 "use strict";
-import fetch from 'node-fetch'
-import Item from '../models/item.js'
+// const fetch = require('node-fetch');
+const Item = require('../models/item.cjs');
 
 const updateDb = async () => {
     try {
@@ -27,7 +27,13 @@ const updateDb = async () => {
                 if(name.startsWith('Patch') || name.startsWith('Sticker')){
                     continue;
                 }
-                data['type'] = 'Agent';
+                if(name === 'Knife') {
+                    data['type'] = 'Weapon';
+                    data['weapon_type'] = 'Knife';
+                    data['specific_type'] = 'Default Knife';
+                } else {
+                    data['type'] = 'Agent';
+                }
             }
             data['classid'] = it['classid'];
             data['icon_url'] = it['icon_url'];
@@ -70,4 +76,4 @@ const updateDb = async () => {
 }
 
 
-export default updateDb;
+module.exports = updateDb;

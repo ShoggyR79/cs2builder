@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import Item from './item.js';
+const mongoose = require('mongoose');
+const Item = require('./item.cjs');
 
 const pistolNumber = 4
 const midTierNumber = 5
@@ -55,4 +55,4 @@ const builderStateSchema = new mongoose.Schema({
 
 const BuilderState = mongoose.model('BuilderState', builderStateSchema);
 
-export default BuilderState;
+module.exports = BuilderState;
