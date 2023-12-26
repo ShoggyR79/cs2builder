@@ -57,7 +57,7 @@ module.exports = (app) => {
                 startingPistol: nameMap['P2000'],
                 pistols: [
                     nameMap['P250'],
-                    nameMap['Dual Berrettas'],
+                    nameMap['Dual Berettas'],
                     nameMap['CZ75-Auto'],
                     nameMap['Desert Eagle']
                 ],
@@ -69,7 +69,7 @@ module.exports = (app) => {
                     nameMap['Negev']
                 ],
                 highTier: [
-                    nameMap['Famas'],
+                    nameMap['FAMAS'],
                     nameMap['M4A4'],
                     nameMap['AUG'],
                     nameMap['SSG 08'],
@@ -81,15 +81,15 @@ module.exports = (app) => {
             }
 
             let tLoadout = {
-                startingPistol: nameMap['Glock'],
+                startingPistol: nameMap['Glock-18'],
                 pistols: [
                     nameMap['P250'],
-                    nameMap['Dual Berrettas'],
+                    nameMap['Dual Berettas'],
                     nameMap['CZ75-Auto'],
                     nameMap['Desert Eagle']
                 ],
                 midTier: [
-                    nameMap['Mac-10'],
+                    nameMap['MAC-10'],
                     nameMap['UMP-45'],
                     nameMap['MP5-SD'],
                     nameMap['Nova'],
