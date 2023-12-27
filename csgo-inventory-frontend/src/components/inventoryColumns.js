@@ -8,7 +8,7 @@ import PickerModal from './pickerModal';
 
 
 const InventoryGrid = styled.div.attrs(() => ({
-  className: "w-full grid grid-cols-4 gap-4 p-2 grid-rows-5",
+  className: "w-full grid grid-cols-4 gap-4 p-2 grid-rows-1",
 }))`
   // Add custom styles if needed
 `;
