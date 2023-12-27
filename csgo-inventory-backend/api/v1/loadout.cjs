@@ -19,8 +19,8 @@ const weaponToCategoryMap = {
     'UMP-45': 'midTier',
     'P90': 'midTier',
     'PP-Bizon': 'midTier',
-    'FAMAS': 'midTier',
-    'Galil AR': 'midTier',
+    'FAMAS': 'highTier',
+    'Galil AR': 'highTier',
     'Nova': 'midTier',
     'Sawed-Off': 'midTier',
     'MAG-7': 'midTier',
@@ -181,9 +181,27 @@ module.exports = (app) => {
     app.get("/v1/loadout/skins", async (req, res) => {
         try {
             const query = req.query;
-            let skins = await Item.find(
-                { 'specific_type': query['specific_type'], 'exterior': 'Factory New' }
-            );
+            let skins = null;
+            if(query['specific_type'] === 'Gloves'){
+                // Note: need Factory New
+                skins = await Item.find(
+                    { 'type': query['specific_type'] }
+                );
+            } else if(query['specific_type'] === 'Agent'){
+                skins = await Item.find(
+                    { 'type': query['specific_type'] }
+                );
+                skins = skins.filter(item =>
+                    item.name !== 'StatTrak™ Swap Tool' &&
+                    item.name !== 'Name Tag' &&
+                    item.name !== 'Prototype Mikla Map Coin' &&
+                    item.name !== 'Storage Unit')
+            }
+            else {
+                skins = await Item.find(
+                    { 'specific_type': query['specific_type'], 'exterior': 'Factory New' }
+                );
+            }
             res.status(200).send(skins);
         } catch (err) {
             console.log(err);
@@ -197,18 +215,29 @@ module.exports = (app) => {
     app.get("/v1/loadout/weapons", async (req, res) => {
         try {
             const query = req.query;
-            const name = query['name'];
-            const category = weaponToCategoryMap[name];
-            let defaultGuns = await Item.find(
-                { 'exterior': 'Not Painted', 'rarity': 'Stock' }
-            );
-            let weapons = defaultGuns.filter(
-                item => 
-                    weaponToCategoryMap[item['name']] === category &&
-                    (
-                        (!(item['name'] in sideUniqueWeapons) || !(name in sideUniqueWeapons)) || 
-                        (sideUniqueWeapons[item['name']] === sideUniqueWeapons[name])
-                    ));
+            const name = query['specific_type'];
+            const side = query['side'];
+            let queriedResults = null;
+            
+            if(name === 'Knife'){
+                queriedResults = await Item.find(
+                    { 'exterior': 'Not Painted', 'weapon_type': 'Knife' }
+                );
+            } else {
+                queriedResults = await Item.find(
+                    { 'exterior': 'Not Painted', 'rarity': 'Stock' }
+                );
+            }
+            let weapons = queriedResults;
+            if(name !== 'Knife'){
+                const category = weaponToCategoryMap[name];
+                weapons = queriedResults.filter(
+                    item => 
+                        weaponToCategoryMap[item['name']] === category &&
+                        (
+                            (!(item['name'] in sideUniqueWeapons) || sideUniqueWeapons[item['name']] === side)
+                        ));
+            }
             res.status(200).send(weapons);
         } catch (err) {
             console.log(err);

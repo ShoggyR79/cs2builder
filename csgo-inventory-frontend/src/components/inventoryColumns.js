@@ -25,6 +25,7 @@ const InventoryScreen = ({setLoading}) => {
   const [tside, setTside] = useState(false);
   const [state, setState] = useState(null);
   const [curLoadout, setCurLoadout] = useState(null);
+  const [info, setInfo] = useState(null);
 
   const changeSide = () => {
     setLoading(true);
@@ -38,11 +39,12 @@ const InventoryScreen = ({setLoading}) => {
     setLoading(false);
   }
 
-  const openModal = (content) => {
+  const openModal = (content, info) => {
     setLoading(true);
     setModalContent(content);
     setIsModalOpen(true);
     setLoading(false);
+    setInfo(info);
   };
 
   const closeModal = () => {
@@ -50,8 +52,10 @@ const InventoryScreen = ({setLoading}) => {
     setIsModalOpen(false);
   };
 
-  const saveModal = (tier, index, newItem) => {
-    console.log(tier, index, newItem)
+  const saveModal = (newItem) => {
+    let tier = info.tier;
+    let index = info.index;
+    let side = tside ? 'tSide' : 'ctSide';
     // first get weapon type of newItem.
     // if it is different from the current weapon, then
     // 1) check if the current weapon is in another slot of the tier
@@ -59,7 +63,26 @@ const InventoryScreen = ({setLoading}) => {
     //    then swap the newItem to the current weapon index
     // 3) if it is not, then swap the current weapon index to the newItem index
     // otherwise, just swap the weapon at the index to the newItem
-    closeModal()
+    let isSwapped = false;
+    console.log(tier)
+    console.log(state)
+    if(tier === 'pistols' || tier === 'midTier' || tier === 'highTier'){
+      console.log("iter", state[side][tier]);
+      for(let i=0;i<state[side][tier].length;++i){
+        if(state[side][tier][i]['specific_type'] === newItem['specific_type']){
+          state[side][tier][i] = state[side][tier][index];
+          state[side][tier][index] = newItem;
+          isSwapped = true;
+          break;
+        }
+      }
+      if(!isSwapped){
+        state[side][tier][index] = newItem;
+      }
+    } else {
+      state[side][tier] = newItem;
+    }
+    closeModal();
   }
 
   useEffect(() => {
@@ -87,37 +110,37 @@ const InventoryScreen = ({setLoading}) => {
     <InventoryGrid>
       <InventoryColumn>
         <div className="text-white text-xl font-bold p-2">Pistols</div>
-        <Item item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol)} />
-        {curLoadout.pistols.map((item) => {
-          return <Item key={item.classid} item={item} onClick={() => openModal(item)} />
+        <Item item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol, {tier: 'startingPistol', index: -1})} />
+        {curLoadout.pistols.map((item, index) => {
+          return <Item key={item.classid} item={item} onClick={() => openModal(item, {tier: 'pistols', index: index})} />
         })}
       </InventoryColumn>
       <InventoryColumn>
         <div className="text-white text-xl font-bold p-2">Mid Tier</div>
-        {curLoadout.midTier.map((item) => {
-          return <Item key={item.classid} item={item} onClick={() => openModal(item)} />
+        {curLoadout.midTier.map((item, index) => {
+          return <Item key={item.classid} item={item} onClick={() => openModal(item, {tier: 'midTier', index: index})} />
         })}
       </InventoryColumn>
       <InventoryColumn>
         <div className="text-white text-xl font-bold p-2">High Tier</div>
-        {curLoadout.highTier.map((item) => {
-          return <Item key={item.classid} item={item} onClick={() => openModal(item)} />
+        {curLoadout.highTier.map((item, index) => {
+          return <Item key={item.classid} item={item} onClick={() => openModal(item, {tier: 'highTier', index: index})} />
         })}
       </InventoryColumn>
       <InventoryColumn>
         <div className="text-white text-xl font-bold p-2">Knife</div>
 
-        <Knife item={curLoadout.knife} onClick={() => openModal(curLoadout.knife)} />
+        <Knife item={curLoadout.knife} onClick={() => openModal(curLoadout.knife, {tier: 'knife', index: -1})} />
         <div className="p-2 text-white text-xl font-bold p-2">Gloves</div>
 
-        <Knife item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves)} />
+        <Knife item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves, {tier: 'gloves', index: -1})} />
         <div className="p-2 text-white text-xl font-bold p-2">Agent</div>
-        <Item item={curLoadout.agent} onClick={() => openModal(curLoadout.agent)} />
+        <Item item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, {tier: 'agent', index: -1})} />
 
         <ToggleButton side={tside} onToggle={() => changeSide()} />
         <div className="mt-2 text-white underline text-xl font-bold">Buy us a coffee & feedback</div>
       </InventoryColumn>
-      <PickerModal item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} />
+      <PickerModal item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />
     </InventoryGrid>
   );
 };

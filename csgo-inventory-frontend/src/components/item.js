@@ -29,7 +29,7 @@ export default function Item(props) {
         return () => window.removeEventListener('resize', handleResize);
     }, []); // Empty array ensures that effect is only run on mount and unmount
     return (
-        <div className={`col-span-1 border rounded-lg shadow bg-gray-800 border-gray-700 border-b-4 mb-3 flex flex-col items-center hover:bg-gray-700 cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105`} onClick={props.onClick}>
+        <div style={{borderBottomColor:`#${props.item.rarity_color}`}} className={`col-span-1 border rounded-lg shadow border-gray-700 bg-gray-800 border-b-4  mb-3 flex flex-col items-center hover:bg-gray-700 cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105`} onClick={props.onClick}>
             {/* Image container with flex properties to center the image */}
             <div className="flex justify-center items-center self-stretch">
                 <img className="rounded-t-lg object-fit max-h-40" src={`https://steamcommunity-a.akamaihd.net/economy/image/${props.item.icon_url}/${Math.max(parseInt(windowSize.width/12), 70)}x${Math.max(parseInt(windowSize.height/10), 70)}`} alt={props.item.name} />

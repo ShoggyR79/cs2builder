@@ -3,21 +3,29 @@
 const Item = require('../models/item.cjs');
 
 const updateDb = async () => {
+    console.log("Updating DB");
     try {
         let response = await fetch("http://csgobackpack.net/api/GetItemsList/v2/", {method: 'GET'});
         response = await response.json();
         const items_list = response['items_list'];
-        for(const [name, it] of Object.entries(items_list)){
+        for(let [name, it] of Object.entries(items_list)){
+            name = name
+                .replace('&#39Blueberries&#39 ', '')
+                .replace('&#39Two Times&#39', '')
+                .replace('&#39Medium Rare&#39', '')
+                .replace('&#39Dead Cold&#39', '')
+                .replace('&#39Wet Sox&#39', '')
+                .replace('&#39Tree Hugger&#39', '')
+                .replace('&#39Van Healen&#39', '')
+                .replace(' (Factory New)', '')
+                .replace(' (Field-Tested)', '')
+                .replace(' (Minimal Wear)', '')
+                .replace(' (Well-Worn)', '')
+                .replace(' (Battle-Scarred)', '')
             let data = {
                 'name': name
-                    .replace('&#39Blueberries&#39 ', '')
-                    .replace(' (Factory New)', '')
-                    .replace(' (Field-Tested)', '')
-                    .replace(' (Minimal Wear)', '')
-                    .replace(' (Well-Worn)', '')
-                    .replace(' (Battle-Scarred)', '')
             };
-            data['name_normalized'] = name.replace(/\W/g, '').toLowerCase();
+            data['name_normalized'] = name.replace(/[^a-zA-Z0-9-_]+/ig,'').toLowerCase();
             data['type'] = it['type'];
             if(data['type'] !== 'Weapon' && data['type'] !== null && data['type'] !== 'Gloves') {
                 continue;
@@ -51,6 +59,8 @@ const updateDb = async () => {
                         data['weapon_type'] = 'Starting Pistol';
                     }
                 }
+            } else if(data['type'] === 'Gloves'){
+                data['exterior'] = it['exterior'];
             }
 
             data['rarity'] = it['rarity'];
