@@ -19,7 +19,7 @@ const InventoryColumn = styled.div.attrs(() => ({
   // Add custom styles if needed
 `;
 
-const InventoryScreen = () => {
+const InventoryScreen = ({setLoading}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [tside, setTside] = useState(false);
@@ -27,6 +27,7 @@ const InventoryScreen = () => {
   const [curLoadout, setCurLoadout] = useState(null);
 
   const changeSide = () => {
+    setLoading(true);
     setCurLoadout(null)
     if (tside) {
       setCurLoadout(state.ctSide)
@@ -34,13 +35,14 @@ const InventoryScreen = () => {
       setCurLoadout(state.tSide)
     }
     setTside(!tside);
-
+    setLoading(false);
   }
 
   const openModal = (content) => {
-    console.log("in")
-    setModalContent("content");
+    setLoading(true);
+    setModalContent(content);
     setIsModalOpen(true);
+    setLoading(false);
   };
 
   const closeModal = () => {
@@ -48,7 +50,20 @@ const InventoryScreen = () => {
     setIsModalOpen(false);
   };
 
+  const saveModal = (tier, index, newItem) => {
+    console.log(tier, index, newItem)
+    // first get weapon type of newItem.
+    // if it is different from the current weapon, then
+    // 1) check if the current weapon is in another slot of the tier
+    // 2) if it is, then swap the current weapon index to the existing weapon index 
+    //    then swap the newItem to the current weapon index
+    // 3) if it is not, then swap the current weapon index to the newItem index
+    // otherwise, just swap the weapon at the index to the newItem
+    closeModal()
+  }
+
   useEffect(() => {
+    setLoading(true);
     fetch("http://localhost:8080/v1/loadout/default")
       .then(res => res.json())
       .then(
@@ -60,6 +75,7 @@ const InventoryScreen = () => {
           } else {
             setCurLoadout(result.ctSide)
           }
+          setLoading(false);
         },
         (error) => {
           console.log(error)
@@ -101,7 +117,7 @@ const InventoryScreen = () => {
         <ToggleButton side={tside} onToggle={() => changeSide()} />
         <div className="mt-2 text-white underline text-xl font-bold">Buy us a coffee & feedback</div>
       </InventoryColumn>
-      <PickerModal showModal={isModalOpen} onModalClose={closeModal} />
+      <PickerModal item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} />
     </InventoryGrid>
   );
 };

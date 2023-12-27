@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function Modal({ showModal, onModalClose }) {
+export default function Modal({ item, showModal, onModalClose }) {
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [choices, setChoices] = useState([]); 
   // Define the button click handlers if needed
   const handleSwapWeapon = () => {
     console.log('Swap weapon clicked');
@@ -13,14 +13,15 @@ export default function Modal({ showModal, onModalClose }) {
     console.log('Save clicked');
     // Implement the save functionality
   };
-
+  useEffect(() => {
+    // Fetch the choices from the backend
+    // setChoices(choicesFromBackend);
+  });
   // Hardcoded images
-  const mainImage = "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5gZKKkPLLMrfFqWdY781lxLuW8Njw31Dn8xc_YTqmJ4DDJFM2ZwqE_ATtx-u7g8C5vpjOzHM263E8pSGKJ1XuG9M/750x900";
-  const choiceImages = new Array(20).fill(mainImage).map((url, index) => ({ id: index, url }));
-
+  const choiceImages = new Array(20).fill("https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5gZKKkPLLMrfFqWdY781lxLuW8Njw31Dn8xc_YTqmJ4DDJFM2ZwqE_ATtx-u7g8C5vpjOzHM263E8pSGKJ1XuG9M/750x900").map((url, index) => ({ id: index, url }));
   return (
     <>
-      {showModal ? (
+      {showModal && item ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center">
           <div className="opacity-50 fixed inset-0 bg-black"></div>
           {/* Close Button */}
@@ -34,8 +35,8 @@ export default function Modal({ showModal, onModalClose }) {
             <div className="flex bg-gray-800 text-white max-w-6xl w-full rounded-lg overflow-hidden shadow-lg">
               {/* Main Image Container with Heading */}
               <div className="w-1/2 flex flex-col justify-center p-5 space-y-4">
-                <img src={mainImage} alt="Main" className="rounded-lg" style={{ maxHeight: '75vh' }} />
-                <h2 className="text-3xl font-bold text-center">AK-47 | Aquamarine Revenge</h2>
+                <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/750x900`} alt="Main" className="rounded-lg" style={{ maxHeight: '75vh' }} />
+                <h2 className="text-3xl font-bold text-center">{item.name}</h2>
                 {/* Buttons */}
                 <div className="flex justify-center space-x-4 p-5">
                   <button onClick={handleSwapWeapon} className="bg-[#EA8C55] text-white font-bold py-2 px-4 rounded">
@@ -63,6 +64,7 @@ export default function Modal({ showModal, onModalClose }) {
                       <p className="mt-2 text-xs">AK-47 | Aquamarine Revenge</p>
                     </div>
                   ))}
+                  {/* need to update with the correct items */}
                 </div>
               </div>
             </div>
