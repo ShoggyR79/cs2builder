@@ -86,32 +86,32 @@ const InventoryScreen = ({setLoading}) => {
     state && curLoadout &&
     <InventoryGrid>
       <InventoryColumn>
-        <div className="p-2 text-white text-xl font-bold">Pistols</div>
+        <div className="text-white text-xl font-bold p-2">Pistols</div>
         <Item item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol)} />
         {curLoadout.pistols.map((item) => {
           return <Item key={item.classid} item={item} onClick={() => openModal(item)} />
         })}
       </InventoryColumn>
       <InventoryColumn>
-        <div className="p-2 text-white text-xl font-bold">Mid Tier</div>
+        <div className="text-white text-xl font-bold p-2">Mid Tier</div>
         {curLoadout.midTier.map((item) => {
           return <Item key={item.classid} item={item} onClick={() => openModal(item)} />
         })}
       </InventoryColumn>
       <InventoryColumn>
-        <div className="p-2 text-white text-xl font-bold">High Tier</div>
+        <div className="text-white text-xl font-bold p-2">High Tier</div>
         {curLoadout.highTier.map((item) => {
           return <Item key={item.classid} item={item} onClick={() => openModal(item)} />
         })}
       </InventoryColumn>
       <InventoryColumn>
-        <div className="p-2 text-white text-xl font-bold">Knife</div>
+        <div className="text-white text-xl font-bold p-2">Knife</div>
 
         <Knife item={curLoadout.knife} onClick={() => openModal(curLoadout.knife)} />
-        <div className="p-2 text-white text-xl font-bold">Gloves</div>
+        <div className="p-2 text-white text-xl font-bold p-2">Gloves</div>
 
         <Knife item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves)} />
-        <div className="p-2 text-white text-xl font-bold">Agent</div>
+        <div className="p-2 text-white text-xl font-bold p-2">Agent</div>
         <Item item={curLoadout.agent} onClick={() => openModal(curLoadout.agent)} />
 
         <ToggleButton side={tside} onToggle={() => changeSide()} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function Modal({ item, showModal, onModalClose }) {
+export default function Modal({ item, showModal, onModalClose, setLoading }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [choices, setChoices] = useState([]); 
   // Define the button click handlers if needed
@@ -16,9 +16,25 @@ export default function Modal({ item, showModal, onModalClose }) {
   useEffect(() => {
     // Fetch the choices from the backend
     // setChoices(choicesFromBackend);
-  });
+    if (item) {
+      setLoading(true);
+      console.log(item.specific_type)
+      fetch(`http://localhost:8080/v1/loadout/skins?specific_type=${item.specific_type}`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log(result)
+          setChoices(result)
+          setLoading(false);
+        },
+        (error) => {
+          console.log(error)
+        }
+      )
+    }
+    
+  }, [item]);
   // Hardcoded images
-  const choiceImages = new Array(20).fill("https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJemkV09-5gZKKkPLLMrfFqWdY781lxLuW8Njw31Dn8xc_YTqmJ4DDJFM2ZwqE_ATtx-u7g8C5vpjOzHM263E8pSGKJ1XuG9M/750x900").map((url, index) => ({ id: index, url }));
   return (
     <>
       {showModal && item ? (
@@ -58,9 +74,9 @@ export default function Modal({ item, showModal, onModalClose }) {
                   className="mb-4 p-2 rounded text-gray-900 bg-gray-700 placeholder-gray-400"
                 />
                 <div className="grid grid-cols-2 gap-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-900 scrollbar-track-gray-600 pr-2" style={{ maxHeight: '75vh' }}>
-                  {choiceImages.map(image => (
-                    <div key={image.id} className="flex flex-col items-center p-2 border border-gray-700 transition duration-300 ease-in-out hover:scale-105 hover:border-gray-500">
-                      <img src={image.url} alt={`AK-47 | Aquamarine Revenge ${image.id}`} className="rounded-lg h-40" />
+                  {choices.map(item => (
+                    <div key={item.classid} className="flex flex-col items-center p-2 border border-gray-700 transition duration-300 ease-in-out hover:scale-105 hover:border-gray-500">
+                      <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/175x300/`} alt={item.name} className="rounded-lg h-40" />
                       <p className="mt-2 text-xs">AK-47 | Aquamarine Revenge</p>
                     </div>
                   ))}
