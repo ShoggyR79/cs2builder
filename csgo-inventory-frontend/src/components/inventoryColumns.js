@@ -19,6 +19,7 @@ const InventoryColumn = styled.div.attrs(() => ({
   // Add custom styles if needed
 `;
 
+
 const InventoryScreen = ({ setLoading }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -84,7 +85,15 @@ const InventoryScreen = ({ setLoading }) => {
     }
     closeModal();
   }
+  // Function to zoom in
+  const zoomIn = () => {
+    document.body.style.zoom = `${parseInt(document.body.style.zoom || 100) + 10}%`;
+  };
 
+  // Function to zoom out
+  const zoomOut = () => {
+    document.body.style.zoom = `${Math.max(parseInt(document.body.style.zoom || 100) - 10, 10)}%`;
+  };
   useEffect(() => {
     setLoading(true);
     fetch("http://localhost:8080/v1/loadout/default")
@@ -108,7 +117,7 @@ const InventoryScreen = ({ setLoading }) => {
   }, [])
   return (
     state && curLoadout &&
-    <div className={"w-3/4 p-4 my-10 rounded-lg shadow-lg" + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
+    <div className={"w-3/4 p-4 my-10 rounded-lg shadow-lg overflow-y-auto scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-gray-600 " + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
 
       <InventoryGrid>
         <InventoryColumn>
@@ -141,10 +150,14 @@ const InventoryScreen = ({ setLoading }) => {
           <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
 
           <ToggleButton side={tside} onToggle={() => changeSide()} />
+
           <div className="mt-2 text-white underline text-xl font-bold cursor-pointer">
             <a href="mailto:cs2builder@gmail.com" className="hover:text-gray-300">
               Got a feedback?
             </a>
+          </div>
+          <div className="text-left text-gray-300 mt-4">
+            <p>If a scrollbar to the right, please adjust your browser zoom.</p>
           </div>
         </InventoryColumn>
         <PickerModal tside={tside} item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />

@@ -13,23 +13,23 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
     // 1 set loading
     // call api
     //
-    if(isChoosingWeapons) {
+    if (isChoosingWeapons) {
       setLoading(true);
       console.log(newItem.specific_type)
       fetch(`http://localhost:8080/v1/loadout/skins?specific_type=${newItem.specific_type}`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setNewItem(newItem);
-          setChoices(result);
-          setTimeout(()=>{
-            setLoading(false);
-          }, 200 );
-        },
-        (error) => {
-          console.log(error)
-        }
-      );
+        .then(res => res.json())
+        .then(
+          (result) => {
+            setNewItem(newItem);
+            setChoices(result);
+            setTimeout(() => {
+              setLoading(false);
+            }, 200);
+          },
+          (error) => {
+            console.log(error)
+          }
+        );
     }
     setIsChoosingWeapons(!isChoosingWeapons);
   };
@@ -38,9 +38,9 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
     console.log('Save clicked');
     setLoading(true);
     saveModal(newItem);
-    setTimeout(()=>{
+    setTimeout(() => {
       setLoading(false);
-    }, 100 )
+    }, 100)
     // Implement the save functionality
   };
 
@@ -51,36 +51,36 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
     if (item) {
       setLoading(true);
       let specific_type = item.specific_type;
-      if(item.type === 'Gloves'){
+      if (item.type === 'Gloves') {
         specific_type = 'Gloves';
-      } else if(item.type === 'Agent'){
+      } else if (item.type === 'Agent') {
         specific_type = 'Agent';
       }
       fetch(`http://localhost:8080/v1/loadout/skins?specific_type=${specific_type}`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setNewItem(item);
-          setChoices(result)
-        },
-        (error) => {
-          console.log(error)
-        }
-      );
-      if(item.name === 'Knife' || item.weapon_type === 'Knife'){
+        .then(res => res.json())
+        .then(
+          (result) => {
+            setNewItem(item);
+            setChoices(result)
+          },
+          (error) => {
+            console.log(error)
+          }
+        );
+      if (item.name === 'Knife' || item.weapon_type === 'Knife') {
         specific_type = 'Knife';
       }
       fetch(`http://localhost:8080/v1/loadout/weapons?specific_type=${specific_type}&side=${side ? 'T' : 'CT'}`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setWeaponChoices(result)
-          setLoading(false);
-        },
-        (error) => {
-          console.log(error)
-        }
-      );
+        .then(res => res.json())
+        .then(
+          (result) => {
+            setWeaponChoices(result)
+            setLoading(false);
+          },
+          (error) => {
+            console.log(error)
+          }
+        );
     }
     return () => {
       // cleanup states
@@ -90,22 +90,22 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
       setIsChoosingWeapons(false);
       setSearchTerm("");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
   // Hardcoded images
 
   const changeItem = (item) => {
     setLoading(true);
     setNewItem(item);
-    setTimeout(()=>{
+    setTimeout(() => {
       setLoading(false);
-    }, 200 );
+    }, 200);
   }
   return (
     <>
       {showModal && newItem ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center">
-          <div className="opacity-50 fixed inset-0 bg-black"></div>
+          <div className="opacity-50 fixed inset-0 bg-black" onClick={() => onModalClose()}></div>
           {/* Close Button */}
           <button
             onClick={() => onModalClose()}
@@ -126,7 +126,7 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
                       {isChoosingWeapons ? "Choose Skin" : (newItem.weapon_type === "Knife" ? "Swap Knife" : "Swap Weapon")}
                     </button>
                   }
-                  
+
                   <button onClick={handleSave} className="bg-[#C75146] text-white font-bold py-2 px-4 rounded">
                     Save
                   </button>
@@ -138,15 +138,15 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
                 <input
                   type="text"
                   value={searchTerm}
-                  onChange={(e) => {console.log("change"); setSearchTerm(e.target.value)}}
+                  onChange={(e) => { console.log("change"); setSearchTerm(e.target.value) }}
                   placeholder="Search..."
                   className="mb-4 p-2 rounded bg-gray-700 placeholder-gray-400"
                 />
-                <div className={`grid grid-cols-2 gap-2 overflow-y-auto place-content-start scrollbar-thin scrollbar-thumb-gray-900 scrollbar-track-gray-600 pr-2`} style={{minHeight:'75vh', maxHeight: '75vh', minWidth:'28vw', maxWidth:"28vw" }}>
-                  {isChoosingWeapons ? weaponChoices.filter((weapon)=>{
+                <div className={`grid grid-cols-2 gap-2  place-content-start overflow-y-auto scrollbar-thin scrollbar-thumb-gray-900 scrollbar-track-gray-600 pr-2`} style={{ minHeight: '75vh', maxHeight: '75vh' }}>
+                  {isChoosingWeapons ? weaponChoices.filter((weapon) => {
                     return weapon.name_normalized.includes(searchTerm.toLowerCase());
                   }).map(item => (
-                    <div key={item.classid} style={{maxHeight:'20vh'}} className="flex flex-col items-center p-2 hover:bg-[#85877e] w-full border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={()=>changeItem(item)}>
+                    <div key={item.classid} style={{ maxHeight: '20vh' }} className="flex flex-col items-center p-2 hover:bg-[#85877e] w-full border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={() => changeItem(item)}>
                       <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/175x300/`} alt={item.name} className="rounded-lg h-40" />
                       <p className="mt-2 text-xs">{item.name}</p>
                     </div>
@@ -155,11 +155,12 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
                   }).map(item => {
                     console.log(item)
                     return (
-                    <div key={item.classid} style={{maxHeight:'20vh', borderBottomColor:`#${item.rarity_color}`}} className="flex flex-col rounded-lg  items-center p-2 hover:bg-[#85877e] w-full border-b-2  border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={()=>changeItem(item)}>
-                      <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/175x300/`} alt={item.name} className="rounded-lg h-40" />
-                      <p className="mt-2 text-xs">{item.name}</p>
-                    </div>
-                  )})}
+                      <div key={item.classid} style={{ maxHeight: '30vh', borderBottomColor: `#${item.rarity_color}` }} className="flex flex-col rounded-lg  items-center p-2 hover:bg-[#85877e] w-full border-b-2  border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={() => changeItem(item)}>
+                        <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/175x300/`} alt={item.name} className="rounded-lg h-40" />
+                        <p className="mt-2 text-xs">{item.name}</p>
+                      </div>
+                    )
+                  })}
                   {/* need to update with the correct items */}
                 </div>
               </div>

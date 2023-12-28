@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "cs2builder",
+  "name": "CS2 Inventory Builder",
   "icons": [
     {
       "src": "favicon.ico",

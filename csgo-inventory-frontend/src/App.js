@@ -9,8 +9,8 @@ function App() {
 
   return (
     <div className="flex justify-center h-screen bg-[#40413c] overflow-hidden">
-      {loading && <Loading/>}
-        <InventoryColumns setLoading={setLoading}/>
+      {loading && <Loading />}
+      <InventoryColumns setLoading={setLoading} />
     </div>
 
   );
