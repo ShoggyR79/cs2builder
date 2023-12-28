@@ -34,8 +34,8 @@ const weaponToCategoryMap = {
     'SSG 08': 'highTier',
     'G3SG1': 'highTier',
     'SCAR-20': 'highTier',
-    'Negev': 'highTier',
-    'M249': 'highTier'
+    'Negev': 'midTier',
+    'M249': 'midTier'
 };
 
 const sideUniqueWeapons = {

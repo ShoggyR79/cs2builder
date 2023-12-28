@@ -14,12 +14,12 @@ const InventoryGrid = styled.div.attrs(() => ({
 `;
 
 const InventoryColumn = styled.div.attrs(() => ({
-  className: "col-span-1 rounded-lg shadow-lg",
+  className: "col-span-1 rounded-lg",
 }))`
   // Add custom styles if needed
 `;
 
-const InventoryScreen = ({setLoading}) => {
+const InventoryScreen = ({ setLoading }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [tside, setTside] = useState(false);
@@ -66,17 +66,17 @@ const InventoryScreen = ({setLoading}) => {
     let isSwapped = false;
     console.log(tier)
     console.log(state)
-    if(tier === 'pistols' || tier === 'midTier' || tier === 'highTier'){
+    if (tier === 'pistols' || tier === 'midTier' || tier === 'highTier') {
       console.log("iter", state[side][tier]);
-      for(let i=0;i<state[side][tier].length;++i){
-        if(state[side][tier][i]['specific_type'] === newItem['specific_type']){
+      for (let i = 0; i < state[side][tier].length; ++i) {
+        if (state[side][tier][i]['specific_type'] === newItem['specific_type']) {
           state[side][tier][i] = state[side][tier][index];
           state[side][tier][index] = newItem;
           isSwapped = true;
           break;
         }
       }
-      if(!isSwapped){
+      if (!isSwapped) {
         state[side][tier][index] = newItem;
       }
     } else {
@@ -104,44 +104,53 @@ const InventoryScreen = ({setLoading}) => {
           console.log(error)
         }
       )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     state && curLoadout &&
-    <InventoryGrid>
-      <InventoryColumn>
-        <div className="text-white text-xl font-bold p-2">Pistols</div>
-        <Item item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol, {tier: 'startingPistol', index: -1})} />
-        {curLoadout.pistols.map((item, index) => {
-          return <Item key={item.classid} item={item} onClick={() => openModal(item, {tier: 'pistols', index: index})} />
-        })}
-      </InventoryColumn>
-      <InventoryColumn>
-        <div className="text-white text-xl font-bold p-2">Mid Tier</div>
-        {curLoadout.midTier.map((item, index) => {
-          return <Item key={item.classid} item={item} onClick={() => openModal(item, {tier: 'midTier', index: index})} />
-        })}
-      </InventoryColumn>
-      <InventoryColumn>
-        <div className="text-white text-xl font-bold p-2">High Tier</div>
-        {curLoadout.highTier.map((item, index) => {
-          return <Item key={item.classid} item={item} onClick={() => openModal(item, {tier: 'highTier', index: index})} />
-        })}
-      </InventoryColumn>
-      <InventoryColumn>
-        <div className="text-white text-xl font-bold p-2">Knife</div>
+    <div className={"w-3/4 p-4 my-10 rounded-lg shadow-lg" + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
 
-        <Knife item={curLoadout.knife} onClick={() => openModal(curLoadout.knife, {tier: 'knife', index: -1})} />
-        <div className="p-2 text-white text-xl font-bold p-2">Gloves</div>
+      <InventoryGrid>
+        <InventoryColumn>
+          <div className="text-white text-xl font-bold p-2">Pistols</div>
+          <Item tside={tside} item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol, { tier: 'startingPistol', index: -1 })} />
+          {curLoadout.pistols.map((item, index) => {
+            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'pistols', index: index })} />
+          })}
+        </InventoryColumn>
+        <InventoryColumn>
+          <div className="text-white text-xl font-bold p-2">Mid Tier</div>
+          {curLoadout.midTier.map((item, index) => {
+            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'midTier', index: index })} />
+          })}
+        </InventoryColumn>
+        <InventoryColumn>
+          <div className="text-white text-xl font-bold p-2">High Tier</div>
+          {curLoadout.highTier.map((item, index) => {
+            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'highTier', index: index })} />
+          })}
+        </InventoryColumn>
+        <InventoryColumn>
+          <div className="text-white text-xl font-bold p-2">Knife</div>
 
-        <Knife item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves, {tier: 'gloves', index: -1})} />
-        <div className="p-2 text-white text-xl font-bold p-2">Agent</div>
-        <Item item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, {tier: 'agent', index: -1})} />
+          <Knife tside={tside} item={curLoadout.knife} onClick={() => openModal(curLoadout.knife, { tier: 'knife', index: -1 })} />
+          <div className="p-2 text-white text-xl font-bold p-2">Gloves</div>
 
-        <ToggleButton side={tside} onToggle={() => changeSide()} />
-        <div className="mt-2 text-white underline text-xl font-bold">Buy us a coffee & feedback</div>
-      </InventoryColumn>
-      <PickerModal item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />
-    </InventoryGrid>
+          <Knife tside={tside} item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves, { tier: 'gloves', index: -1 })} />
+          <div className="p-2 text-white text-xl font-bold p-2">Agent</div>
+          <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
+
+          <ToggleButton side={tside} onToggle={() => changeSide()} />
+          <div className="mt-2 text-white underline text-xl font-bold cursor-pointer">
+            <a href="mailto:cs2builder@gmail.com" className="hover:text-gray-300">
+              Got a feedback?
+            </a>
+          </div>
+        </InventoryColumn>
+        <PickerModal tside={tside} item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />
+      </InventoryGrid>
+    </div>
+
   );
 };
 
