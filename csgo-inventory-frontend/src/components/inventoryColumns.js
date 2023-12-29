@@ -85,18 +85,10 @@ const InventoryScreen = ({ setLoading }) => {
     }
     closeModal();
   }
-  // Function to zoom in
-  const zoomIn = () => {
-    document.body.style.zoom = `${parseInt(document.body.style.zoom || 100) + 10}%`;
-  };
 
-  // Function to zoom out
-  const zoomOut = () => {
-    document.body.style.zoom = `${Math.max(parseInt(document.body.style.zoom || 100) - 10, 10)}%`;
-  };
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:8080/v1/loadout/default")
+    fetch("http://localhost:3030/v1/loadout/default")
       .then(res => res.json())
       .then(
         (result) => {
