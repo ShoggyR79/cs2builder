@@ -4,7 +4,7 @@ import Item from './item';
 import ToggleButton from './togglebutton'; // Assuming you have a ToggleButton component
 import Knife from './knife';
 import PickerModal from './pickerModal';
-
+import config from "../../../config/config.json";
 
 
 const InventoryGrid = styled.div.attrs(() => ({
@@ -88,7 +88,7 @@ const InventoryScreen = ({ setLoading }) => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:3030/v1/loadout/default")
+    fetch(`http://${config.ec2_ip}/v1/loadout/default`)
       .then(res => res.json())
       .then(
         (result) => {

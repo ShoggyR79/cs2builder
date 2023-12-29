@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import config from "../../../config/config.json";
 
 export default function Modal({ item, showModal, onModalClose, setLoading, saveModal, side }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,7 +17,7 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
     if (isChoosingWeapons) {
       setLoading(true);
       console.log(newItem.specific_type)
-      fetch(`http://localhost:3030/v1/loadout/skins?specific_type=${newItem.specific_type}`)
+      fetch(`http://${config.ec2_ip}/v1/loadout/skins?specific_type=${newItem.specific_type}`)
         .then(res => res.json())
         .then(
           (result) => {
@@ -56,7 +57,7 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
       } else if (item.type === 'Agent') {
         specific_type = 'Agent';
       }
-      fetch(`http://localhost:3030/v1/loadout/skins?specific_type=${specific_type}`)
+      fetch(`http://${config.ec2_ip}/v1/loadout/skins?specific_type=${specific_type}`)
         .then(res => res.json())
         .then(
           (result) => {
@@ -70,7 +71,7 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
       if (item.name === 'Knife' || item.weapon_type === 'Knife') {
         specific_type = 'Knife';
       }
-      fetch(`http://localhost:3030/v1/loadout/weapons?specific_type=${specific_type}&side=${side ? 'T' : 'CT'}`)
+      fetch(`http://${config.ec2_ip}/v1/loadout/weapons?specific_type=${specific_type}&side=${side ? 'T' : 'CT'}`)
         .then(res => res.json())
         .then(
           (result) => {
