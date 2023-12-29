@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cron = require('node-cron');
+const path = require('path');
 const updateDb = require('./scripts/updateDb.cjs');
 
 // Import configuration
@@ -31,9 +32,18 @@ cron.schedule('0 */12 * * *', () => {
   updateDb();
 });
 
-// Define your routes and API endpoints here
+// Define your API routes here
 // Example route:
 require("./api/index.cjs")(app);
+
+// Serve static files from the React app
+app.use(express.static(path.resolve(__dirname, '../csgo-inventory-frontend/build')));
+
+// The catchall handler: for any request that doesn't match the above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../csgo-inventory-frontend/build/index.html'));
+});
+
 // Listen on the configured port
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
