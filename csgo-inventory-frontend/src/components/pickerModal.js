@@ -17,7 +17,7 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
     if (isChoosingWeapons) {
       setLoading(true);
       console.log(newItem.specific_type)
-      fetch(`http://${config.ec2_ip}/v1/loadout/skins?specific_type=${newItem.specific_type}`)
+      fetch(`/v1/loadout/skins?specific_type=${newItem.specific_type}`)
         .then(res => res.json())
         .then(
           (result) => {
@@ -57,7 +57,7 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
       } else if (item.type === 'Agent') {
         specific_type = 'Agent';
       }
-      fetch(`http://${config.ec2_ip}/v1/loadout/skins?specific_type=${specific_type}`)
+      fetch(`/v1/loadout/skins?specific_type=${specific_type}`)
         .then(res => res.json())
         .then(
           (result) => {
@@ -71,7 +71,7 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
       if (item.name === 'Knife' || item.weapon_type === 'Knife') {
         specific_type = 'Knife';
       }
-      fetch(`http://${config.ec2_ip}/v1/loadout/weapons?specific_type=${specific_type}&side=${side ? 'T' : 'CT'}`)
+      fetch(`/v1/loadout/weapons?specific_type=${specific_type}&side=${side ? 'T' : 'CT'}`)
         .then(res => res.json())
         .then(
           (result) => {

@@ -88,7 +88,7 @@ const InventoryScreen = ({ setLoading }) => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://${config.ec2_ip}/v1/loadout/default`)
+    fetch(`/v1/loadout/default`)
       .then(res => res.json())
       .then(
         (result) => {
