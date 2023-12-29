@@ -4,7 +4,7 @@ import Item from './item';
 import ToggleButton from './togglebutton'; // Assuming you have a ToggleButton component
 import Knife from './knife';
 import PickerModal from './pickerModal';
-import config from "../../../config/config.json";
+import config from "../config/config.js";
 
 
 const InventoryGrid = styled.div.attrs(() => ({

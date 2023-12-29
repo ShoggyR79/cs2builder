@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import config from "../../../config/config.json";
+import config from "../config/config.js";
 
 export default function Modal({ item, showModal, onModalClose, setLoading, saveModal, side }) {
   const [searchTerm, setSearchTerm] = useState("");
