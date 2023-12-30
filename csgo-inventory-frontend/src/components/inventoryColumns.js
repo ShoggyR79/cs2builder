@@ -149,7 +149,7 @@ const InventoryScreen = ({ setLoading }) => {
             </a>
           </div>
           <div className="text-left text-gray-300 mt-4">
-            <p>If a scrollbar to the right, please adjust your browser zoom.</p>
+            <p>If a scrollbar appears to the right, please adjust your browser zoom.</p>
           </div>
         </InventoryColumn>
         <PickerModal tside={tside} item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />
