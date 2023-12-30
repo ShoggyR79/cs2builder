@@ -65,10 +65,8 @@ const InventoryScreen = ({ setLoading }) => {
     // 3) if it is not, then swap the current weapon index to the newItem index
     // otherwise, just swap the weapon at the index to the newItem
     let isSwapped = false;
-    console.log(tier)
-    console.log(state)
     if (tier === 'pistols' || tier === 'midTier' || tier === 'highTier') {
-      console.log("iter", state[side][tier]);
+      // console.log("iter", state[side][tier]);
       for (let i = 0; i < state[side][tier].length; ++i) {
         if (state[side][tier][i]['specific_type'] === newItem['specific_type']) {
           state[side][tier][i] = state[side][tier][index];
@@ -92,7 +90,7 @@ const InventoryScreen = ({ setLoading }) => {
       .then(res => res.json())
       .then(
         (result) => {
-          console.log(result)
+          // console.log(result)
           setState(result)
           if (tside) {
             setCurLoadout(result.tSide)
