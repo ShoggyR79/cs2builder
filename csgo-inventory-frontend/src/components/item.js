@@ -16,7 +16,6 @@ export default function Item(props) {
                 width: window.innerWidth,
                 height: window.innerHeight,
             });
-            console.log(window.innerWidth, window.innerHeight)
         }
 
         // Add event listener

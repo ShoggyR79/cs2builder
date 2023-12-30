@@ -9,14 +9,14 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
   const [newItem, setNewItem] = useState(null);
   // Define the button click handlers if needed
   const handleSwapWeapon = async () => {
-    console.log('Swap weapon clicked');
+    // console.log('Swap weapon clicked');
     // Implement the swap weapon functionality
     // 1 set loading
     // call api
     //
     if (isChoosingWeapons) {
       setLoading(true);
-      console.log(newItem.specific_type)
+      // console.log(newItem.specific_type)
       fetch(`/v1/loadout/skins?specific_type=${newItem.specific_type}`)
         .then(res => res.json())
         .then(
@@ -36,7 +36,6 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
   };
 
   const handleSave = () => {
-    console.log('Save clicked');
     setLoading(true);
     saveModal(newItem);
     setTimeout(() => {
@@ -139,22 +138,21 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
                 <input
                   type="text"
                   value={searchTerm}
-                  onChange={(e) => { console.log("change"); setSearchTerm(e.target.value) }}
+                  onChange={(e) => { setSearchTerm(e.target.value) }}
                   placeholder="Search..."
                   className="mb-4 p-2 rounded bg-gray-700 placeholder-gray-400"
                 />
                 <div className={`grid grid-cols-2 gap-2  place-content-start overflow-y-auto scrollbar-thin scrollbar-thumb-gray-900 scrollbar-track-gray-600 pr-2`} style={{ minHeight: '75vh', maxHeight: '75vh' }}>
                   {isChoosingWeapons ? weaponChoices.filter((weapon) => {
-                    return weapon.name_normalized.includes(searchTerm.toLowerCase());
+                    return weapon.name_normalized.includes(searchTerm.replace(" ", "").toLowerCase());
                   }).map(item => (
                     <div key={item.classid} style={{ maxHeight: '20vh' }} className="flex flex-col items-center p-2 hover:bg-[#85877e] w-full border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={() => changeItem(item)}>
                       <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/175x300/`} alt={item.name} className="rounded-lg h-40" />
                       <p className="mt-2 text-xs">{item.name}</p>
                     </div>
                   )) : choices.filter((choice) => {
-                    return choice.name_normalized.includes(searchTerm.toLowerCase());
+                    return choice.name_normalized.includes(searchTerm.replace(" ", "").toLowerCase());
                   }).map(item => {
-                    console.log(item)
                     return (
                       <div key={item.classid} style={{ maxHeight: '30vh', borderBottomColor: `#${item.rarity_color}` }} className="flex flex-col rounded-lg  items-center p-2 hover:bg-[#85877e] w-full border-b-2  border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={() => changeItem(item)}>
                         <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/175x300/`} alt={item.name} className="rounded-lg h-40" />
