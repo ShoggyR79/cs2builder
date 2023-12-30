@@ -183,7 +183,6 @@ module.exports = (app) => {
             const query = req.query;
             let skins = null;
             if(query['specific_type'] === 'Gloves'){
-                // Note: need Factory New
                 skins = await Item.find(
                     { 'type': query['specific_type'] }
                 );
@@ -199,7 +198,7 @@ module.exports = (app) => {
             }
             else {
                 skins = await Item.find(
-                    { 'specific_type': query['specific_type'], 'exterior': 'Factory New' }
+                    { 'specific_type': query['specific_type'] }
                 );
             }
             res.status(200).send(skins);

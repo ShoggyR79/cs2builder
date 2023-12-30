@@ -2,6 +2,20 @@
 // const fetch = require('node-fetch');
 const Item = require('../models/item.cjs');
 
+const rariry_map = {
+    'Consumer Grade': 1,
+    'Industrial Grade': 2,
+    'Mil-Spec Grade': 3,
+    'Restricted': 4,
+    'Classified': 5,
+    'Covert': 6,
+    'Contraband': 7,
+    'Distinguished': 4,
+    'Exceptional': 5,
+    'Superior': 6,
+    'Master': 7
+}
+
 const updateDb = async () => {
     console.log("Updating DB");
     try {
@@ -17,20 +31,32 @@ const updateDb = async () => {
                 .replace('&#39Wet Sox&#39', '')
                 .replace('&#39Tree Hugger&#39', '')
                 .replace('&#39Van Healen&#39', '')
-                .replace(' (Factory New)', '')
-                .replace(' (Field-Tested)', '')
-                .replace(' (Minimal Wear)', '')
-                .replace(' (Well-Worn)', '')
-                .replace(' (Battle-Scarred)', '')
+                .replace('&#39The Doctor&#39', '')
+                .replace(' (Factory New)', ' (FN)')
+                .replace(' (Field-Tested)', ' (FT)')
+                .replace(' (Minimal Wear)', ' (MW)')
+                .replace(' (Well-Worn)', ' (WW)')
+                .replace(' (Battle-Scarred)', ' (BS)')
             let data = {
                 'name': name
             };
             data['name_normalized'] = name.replace(/[^a-zA-Z0-9-_]+/ig,'').toLowerCase();
+            if(data['name'].endsWith('(FN)')){
+                data['name_normalized'] += 'factorymew';
+            }else if(data['name'].endsWith('(MW)')){
+                data['name_normalized'] += 'minimalwear';
+            }else if(data['name'].endsWith('(FT)')){
+                data['name_normalized'] += 'fieldtested';
+            }else if(data['name'].endsWith('(WW)')){
+                data['name_normalized'] += 'wellworn';
+            }else if(data['name'].endsWith('(BS)')){
+                data['name_normalized'] += 'battlescarred';
+            }
             data['type'] = it['type'];
             if(data['type'] !== 'Weapon' && data['type'] !== null && data['type'] !== 'Gloves') {
                 continue;
             }
-            console.log(name);
+            console.log(data['name']);
             if(data['type'] === null) {
                 if(name.startsWith('Patch') || name.startsWith('Sticker')){
                     continue;
@@ -57,14 +83,34 @@ const updateDb = async () => {
                     data['specific_type'] = it['gun_type'];
                     if(data['specific_type'] === 'USP-S' || data['specific_type'] === 'P2000'){
                         data['weapon_type'] = 'Starting Pistol';
+                    } else if(data['specific_type'] === 'Desert Eagle') {
+                        if(it['rarity'] === 'Stock' && it['exterior'] !== 'Not Painted'){
+                            // skip weird desert eagle skins
+                            continue;
+                        }
                     }
                 }
             } else if(data['type'] === 'Gloves'){
-                data['exterior'] = it['exterior'];
+                if(data['name'].endsWith('(FN)')){
+                    data['exterior'] = 'Factory New';
+                }else if(data['name'].endsWith('(MW)')){
+                    data['exterior'] = 'Minimal Wear';
+                }else if(data['name'].endsWith('(FT)')){
+                    data['exterior'] = 'Field-Tested';
+                }else if(data['name'].endsWith('(WW)')){
+                    data['exterior'] = 'Well-Worn';
+                }else if(data['name'].endsWith('(BS)')){
+                    data['exterior'] = 'Battle-Scarred';
+                }
             }
 
             data['rarity'] = it['rarity'];
             data['rarity_color'] = it['rarity_color'];
+            if(data['rarity'] in rariry_map){
+                data['rarity_score'] = rariry_map[data['rarity']];
+            }else{
+                data['rarity_score'] = 0;
+            }
             if(!('price' in it)){
                 data['price'] = 0;
             } else {
@@ -73,6 +119,7 @@ const updateDb = async () => {
                     break;
                 }
             }
+            data['last_updated'] = Date.now();
             let item = await Item.findOneAndUpdate(
                 { classid: data['classid'] },
                 { $set: data },

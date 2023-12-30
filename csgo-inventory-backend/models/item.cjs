@@ -23,7 +23,9 @@ const itemSchema = new mongoose.Schema({
     exterior: {
         type: String,
         required: function() { return this.type === 'Gun' || this.type === 'Knife'; }
-    }
+    },
+    rarity_score: Number,
+    last_updated: Date
 });
 
 const Item = mongoose.model('Item', itemSchema);
