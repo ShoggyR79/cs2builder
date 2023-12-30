@@ -17,7 +17,9 @@ module.exports = (app) => {
         rarity: Joi.string().required(),
         rarity_color: Joi.string().required(),
         price: Joi.number(),
-        exterior: Joi.string()
+        exterior: Joi.string(),
+        rarity_score: Joi.number(),
+        last_updated: Joi.date()
     });
 
     /**

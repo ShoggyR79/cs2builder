@@ -32,6 +32,7 @@ cron.schedule('0 */12 * * *', () => {
   updateDb();
 });
 
+
 // Define your API routes here
 // Example route:
 require("./api/index.cjs")(app);
