@@ -43,7 +43,7 @@ export const FeedbackModal = ({ isOpen, onClose }) => {
                         </div>
                     </div>
                     <div className="flex justify-between items-center w-full p-4">
-                        <span className="text-lg font-semibold">Lil' W1nddd</span>
+                        <span className="text-lg font-semibold">Kunrius</span>
                         <div>
                             <SocialIcon
                                 url={"https://github.com/binhho2607"}
