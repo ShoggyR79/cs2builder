@@ -14,7 +14,7 @@ import { FeedbackModal } from './feedbackModal.js';
 
 
 const InventoryGrid = styled.div.attrs(() => ({
-  className: "w-full grid grid-cols-2 gap-1 sm:gap-4 p-2 grid-rows-2 sm:grid-cols-4 sm:grid-rows-1",
+  className: "w-full grid gap-1 sm:gap-4 p-2 grid-cols-2 grid-rows-2 sm:grid-cols-4 sm:grid-rows-1",
 }))`
   // Add custom styles if needed
 `;
@@ -114,7 +114,7 @@ const InventoryScreen = ({ setLoading, id }) => {
     setLoading(true);
     let api_link = `/v1/loadout/default`;
     // TODO: Add endpoint. no endpoint for now
-    if (false && id ){
+    if (false && id) {
       api_link = `/v1/loadout/id/${id}`
     }
     fetch(api_link)
@@ -134,7 +134,7 @@ const InventoryScreen = ({ setLoading, id }) => {
           console.log(error)
           setLoading(false);
           setErrorMsg(error.message);
-          setIsErrorModalOpen(true);          
+          setIsErrorModalOpen(true);
         }
       )
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -143,7 +143,7 @@ const InventoryScreen = ({ setLoading, id }) => {
 
   return (
     state && curLoadout &&
-    <div className={"w-3/4 p-4 my-10 rounded-lg shadow-lg overflow-y-auto scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-gray-600 " + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
+    <div className={"w-11/12 sm:w-3/4 p-4 my-4 sm:my-10 rounded-lg shadow-lg overflow-y-auto scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-gray-600 " + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
 
       <InventoryGrid>
         <InventoryColumn>
@@ -169,19 +169,19 @@ const InventoryScreen = ({ setLoading, id }) => {
           <div className="text-white text-xl font-bold p-2">Knife</div>
 
           <Knife tside={tside} item={curLoadout.knife} onClick={() => openModal(curLoadout.knife, { tier: 'knife', index: -1 })} />
-          <div className="p-2 text-white text-xl font-bold p-2">Gloves</div>
+          <div className="p-2 text-white text-xl font-bold px-2 py-1">Gloves</div>
 
           <Knife tside={tside} item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves, { tier: 'gloves', index: -1 })} />
-          <div className="p-2 text-white text-xl font-bold p-2">Agent</div>
+          <div className="p-2 text-white text-xl font-bold px-2 py-1">Agent</div>
           <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
 
-          <div className="flex flex-col sm:flex-row justify-between items-start mt-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start mt-4 ml-2 sm:ml-0">
             <ToggleButton side={tside} onToggle={() => changeSide()} />
             <button onClick={() => { handleSaveAndShare() }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 sm:py-2 sm:px-4 rounded sm:ml-2">
               Save and Share
             </button>
           </div>
-          <div className="mt-2 text-white underline text-xl font-bold cursor-pointer" onClick={() => setIsFeedbackModalOpen(true)}>
+          <div className="mt-2 text-white underline text-xl font-bold cursor-pointer ml-2 sm:ml-0" onClick={() => setIsFeedbackModalOpen(true)}>
             Contact us
           </div>
           <div className="text-left text-gray-300 mt-4 hidden sm:block">
@@ -208,7 +208,7 @@ const InventoryScreen = ({ setLoading, id }) => {
         />
         <FeedbackModal
           isOpen={isFeedbackModalOpen}
-          onClose={()=> {setIsFeedbackModalOpen(false)}}
+          onClose={() => { setIsFeedbackModalOpen(false) }}
         />
       </InventoryGrid>
     </div>

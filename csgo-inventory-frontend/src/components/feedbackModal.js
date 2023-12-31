@@ -13,13 +13,14 @@ export const FeedbackModal = ({ isOpen, onClose }) => {
             >
                 ×
             </button>
-            <div className="relative z-50 flex justify-center p-5 w-2/4 overflow-y-auto" style={{ maxHeight: "50vh", minHeight: "50vh" }}>
+            <div className="relative z-50 flex justify-center p-5 
+                            sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 
+                            overflow-y-auto sm:max-h-1/2" style={{ minHeight: "50vh" }}>
                 <div className="flex flex-col bg-[#2e2e2c] text-white w-full max-w-md rounded-lg overflow-hidden shadow-lg">
-                    {/* header text  */}
                     <div className="text-lg font-bold p-4 mt-2">
                         Developers and Special Thanks:
                     </div>
-                    <hr class="h-px my-3 bg-gray-200 border-0 dark:bg-gray-700" />
+                    <hr className="h-px my-3 bg-gray-200 border-0 dark:bg-gray-700" />
                     <div className="flex justify-between items-center w-full p-4">
                         <span className="text-lg font-semibold">ShoggyR79</span>
                         <div>
@@ -35,11 +36,6 @@ export const FeedbackModal = ({ isOpen, onClose }) => {
                                 url={"https://www.reddit.com/user/ShoggyR79"}
                                 bgColor="transparent"
                             />
-                            {/* <SocialIcon
-                                url={"https://steamcommunity.com/id/ShoggyR79/"}
-                                bgColor="transparent"
-                            /> */}
-
                         </div>
                     </div>
                     <div className="flex justify-between items-center w-full p-4">
@@ -54,12 +50,13 @@ export const FeedbackModal = ({ isOpen, onClose }) => {
                                 bgColor="transparent"
                             />
                         </div>
-
                     </div>
-                    <div className="flex justify-center items-end w-full p-4">
-                        <a href="https://ko-fi.com/C0C6SOXNH" target="_blank" rel="noreferrer"><img height={36} style={{ border: 0, height: 36 }} src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" border={0} alt="Buy Me a Coffee at ko-fi.com" /></a>
-
+                    <div className="flex justify-center items-end w-full p-4 hidden sm:flex">
+                        <a href="https://ko-fi.com/C0C6SOXNH" target="_blank" rel="noreferrer">
+                            <img height={36} style={{ border: 0, height: 36 }} src="https://storage.ko-fi.com/cdn/kofi2.png?v=3" border={0} alt="Buy Me a Coffee at ko-fi.com" />
+                        </a>
                     </div>
+                    <div className="flex justify-center text-xs pt-5 pb-5 sm:pb-0 px-5">And to everyone who supported us and left feedback!</div>
                 </div>
             </div>
         </div>
