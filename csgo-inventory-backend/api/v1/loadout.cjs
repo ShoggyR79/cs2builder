@@ -59,6 +59,14 @@ const sideUniqueWeapons = {
     'SCAR-20': 'CT'
 }
 
+function generateID() {
+    var firstPart = (Math.random() * 46656) | 0;
+    var secondPart = (Math.random() * 46656) | 0;
+    firstPart = ("000" + firstPart.toString(36)).slice(-3);
+    secondPart = ("000" + secondPart.toString(36)).slice(-3);
+    return firstPart + secondPart;
+}
+
   
 
   
@@ -212,26 +220,6 @@ module.exports = (app) => {
     /**
      * Get Alternatives To A Particular Gun
      */
-    app.get("/v1/loadout/save", async (req, res) => {
-        try {
-            const query = req.query;
-            const loadout_id = query['specific_type'];
-            const loadout = await Loadout.findOne(
-                { 'loadout_id': loadout_id }
-            );
-            // if not found, return null
-            
-            
-            res.status(200).send(weapons);
-        } catch (err) {
-            console.log(err);
-            return res.status(500).send({ error: err });
-        }
-    });
-
-    /**
-     * Get A Loadout Given A Loadout ID
-     */
     app.get("/v1/loadout/weapons", async (req, res) => {
         try {
             const query = req.query;
@@ -259,6 +247,71 @@ module.exports = (app) => {
                         ));
             }
             res.status(200).send(weapons);
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({ error: err });
+        }
+    });
+
+    /**
+     * Get A Loadout Given A Loadout ID
+     */
+    app.get("/v1/loadout/save/:loadout_id", async (req, res) => {
+        try {
+            const params = req.params;
+            const loadout_id = params['loadout_id'];
+            let loadout = await Loadout.findOne(
+                { 'loadout_id': loadout_id }
+            );
+            // if not found, return null
+            if(loadout !== null){
+                // update last_accessed of the loadout
+                loadout['last_accessed'] = Date.now();
+                let item = await Loadout.findOneAndUpdate(
+                    { 'loadout_id': loadout_id },
+                    { $set: loadout },
+                    { new: true, upsert: true }
+                );
+                res.status(200).send(loadout.loadout_object);
+            } else {
+                res.status(200).send({});
+            }
+            
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({ error: err });
+        }
+    });
+
+    /**
+     * Create A Loadout Save
+     */
+    app.post("/v1/loadout/save", async (req, res) => {
+        try {
+            const submitted_loadout = req.body;
+            let loadout_id = generateID();
+            let query_loadout = await Loadout.findOne(
+                { 'loadout_id': loadout_id }
+            );
+            // prevent collision (although very unlikely)
+            while(query_loadout !== null){
+                loadout_id = generateID();
+                query_loadout = await Loadout.findOne(
+                    { 'loadout_id': loadout_id }
+                );
+            }
+            const data = {
+                'loadout_id': loadout_id,
+                'loadout_object': submitted_loadout,
+                'last_accessed': Date.now()
+            }
+            let item = await Loadout.findOneAndUpdate(
+                { 'loadout_id': loadout_id },
+                { $set: data },
+                { new: true, upsert: true }
+            );
+            // if not found, return null
+            res.status(200).send(item);
         } catch (err) {
             console.log(err);
             return res.status(500).send({ error: err });

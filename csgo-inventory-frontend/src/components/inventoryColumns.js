@@ -42,11 +42,23 @@ const InventoryScreen = ({ setLoading, id }) => {
   const [errorMsg, setErrorMsg] = useState('Cannot find loadout with the given ID, redirecting to default loadout.');
 
   const handleSaveAndShare = () => {
-    let id = '1230_abcd_efghsfesfaefaexxnuj'
-    const generatedLink = `http://cs2builder.com?id=${id}`; // Replace with actual link generation logic
-    setLink(generatedLink);
-    setIsOptionsModalOpen(false);
-    setIsLinkModalOpen(true);
+    const api_link = '/v1/loadout/save';
+    fetch(api_link, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(state)
+    })
+    .then(res => res.json())
+    .then(
+      (result) => {
+        const generatedLink = `http://cs2builder.com?id=${result.loadout_id}`;
+        setLink(generatedLink);
+        setIsOptionsModalOpen(false);
+        setIsLinkModalOpen(true);
+      }
+    );
   };
 
   const redirectToDefaultLoadout = () => {
@@ -114,14 +126,23 @@ const InventoryScreen = ({ setLoading, id }) => {
     setLoading(true);
     let api_link = `/v1/loadout/default`;
     // TODO: Add endpoint. no endpoint for now
-    if (false && id ){
-      api_link = `/v1/loadout/id/${id}`
+    if ( id ){
+      api_link = `/v1/loadout/save/${id}`;
     }
     fetch(api_link)
-      .then(res => res.json())
+      .then(res => 
+          res.json()
+      )
       .then(
-        (result) => {
-          // console.log(result)
+        async (result) => {
+          // Funky way to handle this ...
+          // Empty json = not found
+          if(Object.keys(result).length === 0){
+            result = await fetch(`/v1/loadout/default`);
+            result = await result.json();
+            redirectToDefaultLoadout();
+          }
+          console.log(result)
           setState(result)
           if (tside) {
             setCurLoadout(result.tSide)
