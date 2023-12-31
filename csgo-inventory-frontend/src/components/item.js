@@ -16,7 +16,6 @@ export default function Item(props) {
                 width: window.innerWidth,
                 height: window.innerHeight,
             });
-            console.log(window.innerWidth, window.innerHeight)
         }
 
         // Add event listener
@@ -29,14 +28,14 @@ export default function Item(props) {
         return () => window.removeEventListener('resize', handleResize);
     }, []); // Empty array ensures that effect is only run on mount and unmount
     return (
-        <div style={{ borderBottomColor: `#${props.item.rarity_color}` }} className={`col-span-1 border rounded-lg shadow border-gray-700 ${props.tside ? "bg-[#50442a]" : "bg-[#303c4a]"} border-b-4  mb-3 flex flex-col items-center ${props.tside ? "hover:bg-[#302b1b]" : "hover:bg-[#263140]"} cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105`} onClick={props.onClick}>
+        <div style={{ borderBottomColor: `#${props.item.rarity_color}` }} className={`col-span-1 h-1/6 border rounded-lg shadow border-gray-700 ${props.tside ? "bg-[#50442a]" : "bg-[#303c4a]"} border-b-4  mb-3 flex flex-col items-center ${props.tside ? "hover:bg-[#302b1b]" : "hover:bg-[#263140]"} cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105`} onClick={props.onClick}>
             {/* Image container with flex properties to center the image */}
             <div className="flex justify-center items-center self-stretch">
-                <img className="rounded-t-lg object-fit max-h-30" src={`https://steamcommunity-a.akamaihd.net/economy/image/${props.item.icon_url}/${Math.max(parseInt(windowSize.width / 10), 70)}x${Math.max(parseInt(windowSize.height / 10), 70)}`} alt={props.item.name} />
+                <img className="rounded-t-lg object-fit" src={`https://steamcommunity-a.akamaihd.net/economy/image/${props.item.icon_url}/${Math.max(parseInt(windowSize.width / 10), 70)}x${Math.max(parseInt(windowSize.height / 10), 70)}`} alt={props.item.name} />
             </div>
             {/* Text container for the name */}
             <div className="w-full text-center p-2">
-                <p className="font-semibold text-gray-400 text-base tracking-wide">{props.item.name}</p>
+                <p className="font-semibold text-gray-400 text-base tracking-wide truncate">{props.item.name}</p>
             </div>
         </div>
     );
