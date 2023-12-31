@@ -1,18 +1,14 @@
-import { useState } from 'react';
 import './App.css';
-import InventoryColumns from './components/inventoryColumns';
-import { Loading } from './components/loading';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {Landing} from './components/landing'; // Assuming Landing is a default export
 
 function App() {
-
-  const [loading, setLoading] = useState(false);
-
   return (
-    <div className="flex justify-center h-screen bg-[#40413c] overflow-hidden">
-      {loading && <Loading />}
-      <InventoryColumns setLoading={setLoading} />
-    </div>
-
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<Landing />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
