@@ -42,11 +42,23 @@ const InventoryScreen = ({ setLoading, id }) => {
   const [errorMsg, setErrorMsg] = useState('Cannot find loadout with the given ID, redirecting to default loadout.');
 
   const handleSaveAndShare = () => {
-    let id = '1230_abcd_efghsfesfaefaexxnuj'
-    const generatedLink = `http://cs2builder.com?id=${id}`; // Replace with actual link generation logic
-    setLink(generatedLink);
-    setIsOptionsModalOpen(false);
-    setIsLinkModalOpen(true);
+    const api_link = '/v1/loadout/save';
+    fetch(api_link, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(state)
+    })
+      .then(res => res.json())
+      .then(
+        (result) => {
+          const generatedLink = `http://cs2builder.com?id=${result.loadout_id}`;
+          setLink(generatedLink);
+          setIsOptionsModalOpen(false);
+          setIsLinkModalOpen(true);
+        }
+      );
   };
 
   const redirectToDefaultLoadout = () => {
@@ -111,108 +123,106 @@ const InventoryScreen = ({ setLoading, id }) => {
   }
 
   useEffect(() => {
-    setLoading(true);
-    let api_link = `/v1/loadout/default`;
-    // TODO: Add endpoint. no endpoint for now
-    if (false && id) {
-      api_link = `/v1/loadout/id/${id}`
-    }
-    fetch(api_link)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          // console.log(result)
-          setState(result)
-          if (tside) {
-            setCurLoadout(result.tSide)
-          } else {
-            setCurLoadout(result.ctSide)
-          }
-          setLoading(false);
-        },
-        (error) => {
-          console.log(error)
-          setLoading(false);
-          setErrorMsg(error.message);
-          setIsErrorModalOpen(true);
+    const fetchLoadout = async () => {
+      let api_link = `/v1/loadout/default`;
+      if (id) {
+        api_link = `/v1/loadout/save/${id}`;
+      }
+      const response = await fetch(api_link);
+      if (response.ok) {
+        const data = await response.json();
+        setState(data);
+        if (tside) {
+          setCurLoadout(data.tSide)
+        } else {
+          setCurLoadout(data.ctSide)
         }
-      )
+      } else {
+        setIsErrorModalOpen(true);
+      }
+    }
+
+    setLoading(true);
+    fetchLoadout();
+    setLoading(false);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [id])
 
 
   return (
-    state && curLoadout &&
-    <div className={"w-11/12 sm:w-3/4 p-4 my-4 sm:my-10 rounded-lg shadow-lg overflow-y-auto scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-gray-600 " + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
+    <>
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        content={errorMsg}
+        onClose={redirectToDefaultLoadout}
+        onConfirm={redirectToDefaultLoadout}
+      />
+      {state && curLoadout &&
+      <div className={"w-11/12 sm:w-3/4 p-4 my-4 sm:my-10 rounded-lg shadow-lg overflow-y-auto scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-gray-600 " + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
 
-      <InventoryGrid>
-        <InventoryColumn>
-          <div className="text-white text-xl font-bold p-2">Pistols</div>
-          <Item tside={tside} item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol, { tier: 'startingPistol', index: -1 })} />
-          {curLoadout.pistols.map((item, index) => {
-            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'pistols', index: index })} />
-          })}
-        </InventoryColumn>
-        <InventoryColumn>
-          <div className="text-white text-xl font-bold p-2">Mid Tier</div>
-          {curLoadout.midTier.map((item, index) => {
-            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'midTier', index: index })} />
-          })}
-        </InventoryColumn>
-        <InventoryColumn>
-          <div className="text-white text-xl font-bold p-2">High Tier</div>
-          {curLoadout.highTier.map((item, index) => {
-            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'highTier', index: index })} />
-          })}
-        </InventoryColumn>
-        <InventoryColumn>
-          <div className="text-white text-xl font-bold p-2">Knife</div>
+        <InventoryGrid>
+          <InventoryColumn>
+            <div className="text-white text-xl font-bold p-2">Pistols</div>
+            <Item tside={tside} item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol, { tier: 'startingPistol', index: -1 })} />
+            {curLoadout.pistols.map((item, index) => {
+              return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'pistols', index: index })} />
+            })}
+          </InventoryColumn>
+          <InventoryColumn>
+            <div className="text-white text-xl font-bold p-2">Mid Tier</div>
+            {curLoadout.midTier.map((item, index) => {
+              return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'midTier', index: index })} />
+            })}
+          </InventoryColumn>
+          <InventoryColumn>
+            <div className="text-white text-xl font-bold p-2">High Tier</div>
+            {curLoadout.highTier.map((item, index) => {
+              return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'highTier', index: index })} />
+            })}
+          </InventoryColumn>
+          <InventoryColumn>
+            <div className="text-white text-xl font-bold p-2">Knife</div>
 
-          <Knife tside={tside} item={curLoadout.knife} onClick={() => openModal(curLoadout.knife, { tier: 'knife', index: -1 })} />
-          <div className="p-2 text-white text-xl font-bold px-2 py-1">Gloves</div>
+            <Knife tside={tside} item={curLoadout.knife} onClick={() => openModal(curLoadout.knife, { tier: 'knife', index: -1 })} />
+            <div className="p-2 text-white text-xl font-bold px-2 py-1">Gloves</div>
 
-          <Knife tside={tside} item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves, { tier: 'gloves', index: -1 })} />
-          <div className="p-2 text-white text-xl font-bold px-2 py-1">Agent</div>
-          <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
+            <Knife tside={tside} item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves, { tier: 'gloves', index: -1 })} />
+            <div className="p-2 text-white text-xl font-bold px-2 py-1">Agent</div>
+            <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
 
-          <div className="flex flex-col sm:flex-row justify-between items-start mt-4 ml-2 sm:ml-0">
-            <ToggleButton side={tside} onToggle={() => changeSide()} />
-            <button onClick={() => { handleSaveAndShare() }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 sm:py-2 sm:px-4 rounded sm:ml-2">
-              Save and Share
-            </button>
-          </div>
-          <div className="mt-2 text-white underline text-xl font-bold cursor-pointer ml-2 sm:ml-0" onClick={() => setIsFeedbackModalOpen(true)}>
-            Contact us
-          </div>
-          <div className="text-left text-gray-300 mt-4 hidden sm:block">
-            <p>If a scrollbar appears to the right, please adjust your browser zoom.</p>
-          </div>
-        </InventoryColumn>
-        <PickerModal tside={tside} item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />
-        <OptionsModal
-          isOpen={isOptionsModalOpen}
-          onClose={() => setIsOptionsModalOpen(false)}
-          onSaveAndShare={handleSaveAndShare}
-        />
+            <div className="flex flex-col sm:flex-row justify-between items-start mt-4 ml-2 sm:ml-0">
+              <ToggleButton side={tside} onToggle={() => changeSide()} />
+              <button onClick={() => { handleSaveAndShare() }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 sm:py-2 sm:px-4 rounded sm:ml-2">
+                Save and Share
+              </button>
+            </div>
+            <div className="mt-2 text-white underline text-xl font-bold cursor-pointer ml-2 sm:ml-0" onClick={() => setIsFeedbackModalOpen(true)}>
+              Contact us
+            </div>
+            <div className="text-left text-gray-300 mt-4 hidden sm:block">
+              <p>If a scrollbar appears to the right, please adjust your browser zoom.</p>
+            </div>
+          </InventoryColumn>
+          <PickerModal tside={tside} item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />
+          <OptionsModal
+            isOpen={isOptionsModalOpen}
+            onClose={() => setIsOptionsModalOpen(false)}
+            onSaveAndShare={handleSaveAndShare}
+          />
 
-        <LinkModal
-          isOpen={isLinkModalOpen}
-          link={link}
-          onClose={() => setIsLinkModalOpen(false)}
-        />
-        <ErrorModal
-          isOpen={isErrorModalOpen}
-          content={errorMsg}
-          onClose={redirectToDefaultLoadout}
-          onConfirm={redirectToDefaultLoadout}
-        />
-        <FeedbackModal
-          isOpen={isFeedbackModalOpen}
-          onClose={() => { setIsFeedbackModalOpen(false) }}
-        />
-      </InventoryGrid>
-    </div>
-
+          <LinkModal
+            isOpen={isLinkModalOpen}
+            link={link}
+            onClose={() => setIsLinkModalOpen(false)}
+          />
+          <FeedbackModal
+            isOpen={isFeedbackModalOpen}
+            onClose={() => { setIsFeedbackModalOpen(false) }}
+          />
+        </InventoryGrid>
+      </div>}
+    </>
   );
 };
 

@@ -7,7 +7,6 @@ export const Landing = () => {
     const [loading, setLoading] = useState(false);
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id');
-    console.log(id);
 
     return (
         <div className="flex justify-center h-screen bg-[#40413c] overflow-hidden">
