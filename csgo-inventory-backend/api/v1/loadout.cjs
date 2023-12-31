@@ -2,6 +2,7 @@
 
 const Joi = require("joi");
 const Item = require('../../models/item.cjs');
+const Loadout = require('../../models/loadout.cjs');
 
 const weaponToCategoryMap = {
     'Glock-18': 'startingPistol',
@@ -210,6 +211,26 @@ module.exports = (app) => {
 
     /**
      * Get Alternatives To A Particular Gun
+     */
+    app.get("/v1/loadout/save", async (req, res) => {
+        try {
+            const query = req.query;
+            const loadout_id = query['specific_type'];
+            const loadout = await Loadout.findOne(
+                { 'loadout_id': loadout_id }
+            );
+            // if not found, return null
+            
+            
+            res.status(200).send(weapons);
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({ error: err });
+        }
+    });
+
+    /**
+     * Get A Loadout Given A Loadout ID
      */
     app.get("/v1/loadout/weapons", async (req, res) => {
         try {
