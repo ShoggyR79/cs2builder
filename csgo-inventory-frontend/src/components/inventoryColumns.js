@@ -39,6 +39,7 @@ const InventoryScreen = ({ setLoading, id }) => {
   const [link, setLink] = useState('');
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [toggleReset, setToggleReset] = useState(false);
   const [errorMsg, setErrorMsg] = useState('Cannot find loadout with the given ID, redirecting to default loadout.');
 
   const handleSaveAndShare = () => {
@@ -63,6 +64,7 @@ const InventoryScreen = ({ setLoading, id }) => {
 
   const redirectToDefaultLoadout = () => {
     setIsErrorModalOpen(false);
+    setToggleReset(!toggleReset);
     navigate('/');
   };
 
@@ -147,7 +149,7 @@ const InventoryScreen = ({ setLoading, id }) => {
     setLoading(false);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [id, toggleReset])
 
 
   return (
@@ -197,8 +199,8 @@ const InventoryScreen = ({ setLoading, id }) => {
                 Save and Share
               </button>
             </div>
-            <div className="mt-2 text-white underline text-xl font-bold cursor-pointer ml-2 sm:ml-0" onClick={() => setIsFeedbackModalOpen(true)}>
-              Contact us
+            <div className="mt-2 flex flex-col sm:flex-row justify-center text-white underline text-xl font-bold cursor-pointer ml-2 sm:ml-0" >
+              <p className="sm:p-2 hover:text-green-300" onClick={() => setIsFeedbackModalOpen(true)}>Contact us</p> <p className="sm:p-2 hover:text-amber-800"  onClick={() => redirectToDefaultLoadout()}>Reset Loadout</p>
             </div>
             <div className="text-left text-gray-300 mt-4 hidden sm:block">
               <p>If a scrollbar appears to the right, please adjust your browser zoom.</p>
