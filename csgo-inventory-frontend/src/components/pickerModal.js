@@ -19,6 +19,8 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
     // 1 set loading
     // call api
     //
+    // clear search term
+    setSearchTerm("");
     if (isChoosingWeapons) {
       setLoading(true);
       // console.log(newItem.specific_type)
