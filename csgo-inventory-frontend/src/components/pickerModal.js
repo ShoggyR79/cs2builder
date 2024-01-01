@@ -165,7 +165,7 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
                   {isChoosingWeapons ? weaponChoices.filter((weapon) => {
                     return weapon.name_normalized.includes(searchTerm.replace(" ", "").toLowerCase());
                   }).map(item => (
-                    <div key={item.classid} className="flex flex-col justify-center max-w-1/5  min-w-2/5 max-h-45vw  h-auto sm:max-h-30vh sm:max-w-full rounded-lg items-center p-2 hover:bg-[#85877e] w-full border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={() => changeItem(item)}>
+                    <div key={item.classid} className="flex flex-col justify-center max-w-1/5 min-w-2/5 h-auto sm:min-w-fit max-h-45vw sm:max-h-30vh sm:max-w-full rounded-lg items-center p-2 hover:bg-[#85877e] w-full border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={() => changeItem(item)}>
                       <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/300x300/`} alt={item.name} className="object-fillrounded-lg h-40" />
                       <p className="py-2 text-xs truncate text-semibold">{item.name}</p>
                     </div>
