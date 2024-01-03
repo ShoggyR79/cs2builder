@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Item from './item';
+import Item, { formatPrice } from './item';
 import ToggleButton from './togglebutton'; // Assuming you have a ToggleButton component
 import Knife from './knife';
 import PickerModal from './pickerModal';
@@ -99,12 +99,14 @@ const InventoryScreen = ({ setLoading, id }) => {
     // make sure to avoid double counting items that are the same on both side (use map/set?)
     setLoading(true);
     setTimeout(() => {
-      setTotalCost(800);
+      let cost = Math.random() * 1000;
+      setTotalCost(cost);
       setLoading(false);
     }, 200);
   }
 
   const saveModal = (newItem) => {
+    setLoading(true);
     let tier = info.tier;
     let index = info.index;
     let side = tside ? 'tSide' : 'ctSide';
@@ -132,6 +134,9 @@ const InventoryScreen = ({ setLoading, id }) => {
     } else {
       state[side][tier] = newItem;
     }
+    setState(state);
+    calculateCost();
+    setLoading(false);
     closeModal();
   }
 
@@ -150,6 +155,7 @@ const InventoryScreen = ({ setLoading, id }) => {
         } else {
           setCurLoadout(data.ctSide)
         }
+        calculateCost();
       } else {
         setIsErrorModalOpen(true);
       }
@@ -204,20 +210,18 @@ const InventoryScreen = ({ setLoading, id }) => {
               <div className="p-2 text-white text-xl font-bold px-2 py-1">Agent</div>
               <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
 
-              <div className="flex flex-col items-center justify-center xl:flex-row xl:justify-between mt-4 ml-2 sm:ml-0">
-                <div className='flex justify-center w-full'>
-                  <ToggleButton side={tside} onToggle={() => changeSide()} />
-                </div>
-                <div className='w-full flex flex-col items-center space-y-3 mt-2 xl:mt-0 xl:justify-end'>
+              <div className="flex flex-col xl:flex-row justify-between items-center mt-4 ml-2 sm:ml-0">
+                <div className='w-full flex flex-col items-center xl:items-start space-y-3 mt-2 xl:mt-0 order-2 xl:order-1'>
                   <button onClick={() => { handleSaveAndShare() }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out w-full">
                     Save and Share
                   </button>
-                  <div className='flex flex-col xl:flex-row xl:items-center space-y-2 xl:space-x-4'>
-                    <p className='text-lg text-white text-center xl:text-end font-semibold'>Total: <span className='font-bold'>${totalCost}</span></p>
-                    <button onClick={() => { calculateCost() }} className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded transition duration-300 ease-in-out">
-                      Calculate
-                    </button>
+                  <div className='flex flex-col xl:flex-row xl:items-center w-full space-y-2 xl:space-y-0 xl:space-x-4'>
+                    <p className='text-lg text-white font-bold text-center xl:text-start'>Total Cost:</p>
+                    <p className='text-lg text-white font-bold text-center xl:text-start'>{formatPrice(totalCost)}</p>
                   </div>
+                </div>
+                <div className='flex justify-center items-center w-full order-1 xl:order-2'>
+                  <ToggleButton side={tside} onToggle={() => changeSide()} />
                 </div>
               </div>
 
@@ -225,7 +229,7 @@ const InventoryScreen = ({ setLoading, id }) => {
                 <p className="p-2 hover:text-green-300 text-center" onClick={() => setIsFeedbackModalOpen(true)}>Contact us</p>
                 <p className="p-2 hover:text-amber-800 text-center text-sm md:text-xl" onClick={() => redirectToDefaultLoadout()}>Reset Loadout</p>
               </div>
-              <div className="text-left text-gray-300 mt-4 hidden sm:block">
+              <div className="text-left text-gray-300 hidden sm:block">
                 <p className='text-center'>Please adjust browser zoom to fit items</p>
               </div>
             </InventoryColumn>
