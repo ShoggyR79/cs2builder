@@ -31,7 +31,7 @@ export const LinkModal = ({ isOpen, link, onClose }) => {
                     <p className="text-med text-semibold">Sharable Link:</p>
                     <div className="border-2 border-gray-200 flex justify-between items-center mt-4 p-2">
                         {/* SVG and Input Elements */}
-                        <input className="w-full outline-none bg-transparent mx-2" type="text" placeholder="link" value={link} readOnly />
+                        <input name="copylink" className="w-full outline-none bg-transparent mx-2" type="text" placeholder="link" value={link} readOnly />
                         <button
                             onClick={handleCopy}
                             className={`transition duration-400 ease-in-out ${
