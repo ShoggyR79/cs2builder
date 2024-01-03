@@ -8,6 +8,7 @@ const itemSchema = new mongoose.Schema({
     icon_url_large: String, // URL for the item's larger icon
     type: String, // General type of the item (e.g., 'Gun', 'Knife', 'Glove', 'Agent')
     exterior: String, // Exterior quality of the item (e.g., 'Battle-Scarred', 'Factory New')
+    exterior_short: String,
     weapon_type: {
         type: String,
         required: function() { return this.type === 'Gun' || this.type === 'Knife'; }

@@ -42,7 +42,7 @@ const updateDb = async () => {
             };
             data['name_normalized'] = name.replace(/[^a-zA-Z0-9-_]+/ig,'').toLowerCase();
             if(data['name'].endsWith('(FN)')){
-                data['name_normalized'] += 'factorymew';
+                data['name_normalized'] += 'factorynew';
             }else if(data['name'].endsWith('(MW)')){
                 data['name_normalized'] += 'minimalwear';
             }else if(data['name'].endsWith('(FT)')){
@@ -93,16 +93,28 @@ const updateDb = async () => {
             } else if(data['type'] === 'Gloves'){
                 if(data['name'].endsWith('(FN)')){
                     data['exterior'] = 'Factory New';
+                    data['exterior_short'] = 'FN'
                 }else if(data['name'].endsWith('(MW)')){
                     data['exterior'] = 'Minimal Wear';
+                    data['exterior_short'] = 'MW'
                 }else if(data['name'].endsWith('(FT)')){
                     data['exterior'] = 'Field-Tested';
+                    data['exterior_short'] = 'FT'
                 }else if(data['name'].endsWith('(WW)')){
                     data['exterior'] = 'Well-Worn';
+                    data['exterior_short'] = 'WW'
                 }else if(data['name'].endsWith('(BS)')){
                     data['exterior'] = 'Battle-Scarred';
+                    data['exterior_short'] = 'BS'
                 }
             }
+
+            data['name'] = data['name']
+                .replace(' (FN)', '')
+                .replace(' (FT)', '')
+                .replace(' (MW)', '')
+                .replace(' (WW)', '')
+                .replace(' (BS)', '')
 
             data['rarity'] = it['rarity'];
             data['rarity_color'] = it['rarity_color'];
@@ -112,7 +124,7 @@ const updateDb = async () => {
                 data['rarity_score'] = 0;
             }
             if(!('price' in it)){
-                data['price'] = 0;
+                data['price'] = -1;
             } else {
                 for(const [k, v] of Object.entries(it['price'])){
                     data['price'] = v['average'];
