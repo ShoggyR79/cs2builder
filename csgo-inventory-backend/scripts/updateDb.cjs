@@ -24,14 +24,7 @@ const updateDb = async () => {
         const items_list = response['items_list'];
         for(let [name, it] of Object.entries(items_list)){
             name = name
-                .replace('&#39Blueberries&#39 ', '')
-                .replace('&#39Two Times&#39', '')
-                .replace('&#39Medium Rare&#39', '')
-                .replace('&#39Dead Cold&#39', '')
-                .replace('&#39Wet Sox&#39', '')
-                .replace('&#39Tree Hugger&#39', '')
-                .replace('&#39Van Healen&#39', '')
-                .replace('&#39The Doctor&#39', '')
+                .replaceAll('&#39', '\'')
                 .replace(' (Factory New)', ' (FN)')
                 .replace(' (Field-Tested)', ' (FT)')
                 .replace(' (Minimal Wear)', ' (MW)')
@@ -89,6 +82,22 @@ const updateDb = async () => {
                             continue;
                         }
                     }
+                }
+                if(data['name'].endsWith('(FN)')){
+                    data['exterior'] = 'Factory New';
+                    data['exterior_short'] = 'FN'
+                }else if(data['name'].endsWith('(MW)')){
+                    data['exterior'] = 'Minimal Wear';
+                    data['exterior_short'] = 'MW'
+                }else if(data['name'].endsWith('(FT)')){
+                    data['exterior'] = 'Field-Tested';
+                    data['exterior_short'] = 'FT'
+                }else if(data['name'].endsWith('(WW)')){
+                    data['exterior'] = 'Well-Worn';
+                    data['exterior_short'] = 'WW'
+                }else if(data['name'].endsWith('(BS)')){
+                    data['exterior'] = 'Battle-Scarred';
+                    data['exterior_short'] = 'BS'
                 }
             } else if(data['type'] === 'Gloves'){
                 if(data['name'].endsWith('(FN)')){

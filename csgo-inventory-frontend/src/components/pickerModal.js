@@ -290,9 +290,9 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
                       >
                         {/* Wear text */}
                         {
-                          item.wear_short &&
+                          item.exterior_short &&
                           <div className="absolute top-0 left-0 m-2 text-white text-sm font-semibold">
-                            {item.wear_short}
+                            {item.exterior_short}
                           </div>
                         }
 

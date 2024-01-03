@@ -37,9 +37,9 @@ export default function Item(props) {
         <div style={{ borderBottomColor: `#${props.item.rarity_color}` }} className={`col-span-1 h-1/6 sm:h-auto border rounded-lg shadow border-gray-700 ${props.tside ? "bg-[#50442a]" : "bg-[#303c4a]"} border-b-4  mb-3 flex flex-col items-center ${props.tside ? "hover:bg-[#302b1b]" : "hover:bg-[#263140]"} cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105`} onClick={props.onClick}>
             {/* Wear text */}
             {
-                props.item.wear_short && 
+                props.item.exterior_short && 
                 <div className="absolute top-0 left-0 m-2 text-white text-sm font-semibold">
-                    {props.item.wear_short}
+                    {props.item.exterior_short}
                 </div>
             }
 

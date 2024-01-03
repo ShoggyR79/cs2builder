@@ -5,7 +5,7 @@ const pistolNumber = 4
 const midTierNumber = 5
 const highTierNumber = 5
 
-const LoadoutStateSchema = new mongoose.Schema({
+    const LoadoutStateSchema = new mongoose.Schema({
     startingPistol: {
         type: Item.schema,
         required: true

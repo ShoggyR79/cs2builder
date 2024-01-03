@@ -97,9 +97,47 @@ const InventoryScreen = ({ setLoading, id }) => {
   const calculateCost = () => {
     // TODO: calculate cost of both sides
     // make sure to avoid double counting items that are the same on both side (use map/set?)
+    let itemsSet = new Set();
+    let totalCost = 0;
+    for(const [sideName, side] of Object.entries(state)){
+      if(!itemsSet.has(side.startingPistol.classid)){
+        itemsSet.add(side.startingPistol.classid);
+        totalCost += Math.max(side.startingPistol.price, 0);
+      }
+      if(!itemsSet.has(side.knife.classid)){
+        itemsSet.add(side.knife.classid);
+        totalCost += Math.max(side.knife.price, 0);
+      }
+      if(!itemsSet.has(side.gloves.classid)){
+        itemsSet.add(side.gloves.classid);
+        totalCost += Math.max(side.gloves.price, 0);
+      }
+      if(!itemsSet.has(side.agent.classid)){
+        itemsSet.add(side.agent.classid);
+        totalCost += Math.max(side.agent.price, 0);
+      }
+      for(const item of side.pistols){
+        if(!itemsSet.has(item.classid)){
+          itemsSet.add(item.classid);
+          totalCost += Math.max(item.price, 0);
+        }
+      }
+      for(const item of side.midTier){
+        if(!itemsSet.has(item.classid)){
+          itemsSet.add(item.classid);
+          totalCost += Math.max(item.price, 0);
+        }
+      }
+      for(const item of side.highTier){
+        if(!itemsSet.has(item.classid)){
+          itemsSet.add(item.classid);
+          totalCost += Math.max(item.price, 0);
+        }
+      }
+    }
     setLoading(true);
     setTimeout(() => {
-      setTotalCost(800);
+      setTotalCost(totalCost);
       setLoading(false);
     }, 200);
   }
