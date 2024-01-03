@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import config from "../config/config.js";
+import { formatPrice } from "./item.js";
 
 export default function Modal({ item, showModal, onModalClose, setLoading, saveModal, side }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -7,6 +8,8 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
   const [weaponChoices, setWeaponChoices] = useState([]);
   const [isChoosingWeapons, setIsChoosingWeapons] = useState(false);
   const [newItem, setNewItem] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [sortBy, setSortBy] = useState(""); // {price+, price- , name+, name-, rarity+, rarity-} "" = none
   // State for storing window dimensions
   const [windowSize, setWindowSize] = useState({
     width: undefined,
@@ -18,9 +21,12 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
     // Implement the swap weapon functionality
     // 1 set loading
     // call api
-    //
+
     // clear search term
     setSearchTerm("");
+    // clear sort by
+    setSortBy("");
+
     if (isChoosingWeapons) {
       setLoading(true);
       // console.log(newItem.specific_type)
@@ -50,6 +56,45 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
     }, 100)
     // Implement the save functionality
   };
+
+  const generateOrder = (itemsArray) => {
+    switch (sortBy) {
+      case "price+":
+        return itemsArray.sort((a, b) => {
+          // $NA is the highest price
+          if (a.price === "NA") {
+            return -1;
+          }
+          return a.price - b.price;
+        });
+      case "name+":
+        return itemsArray.sort((a, b) => {
+          return a.name.localeCompare(b.name);
+        });
+      case "rarity+":
+        return itemsArray.sort((a, b) => {
+          return a.rarity_score - b.rarity_score;
+        });
+      case "price-":
+        return itemsArray.sort((a, b) => {
+          // $NA is the highest price
+          if (a.price === "NA") {
+            return 1;
+          }
+          return b.price - a.price;
+        });
+      case "name-":
+        return itemsArray.sort((a, b) => {
+          return b.name.localeCompare(a.name);
+        });
+      case "rarity-":
+        return itemsArray.sort((a, b) => {
+          return b.rarity_score - a.rarity_score;
+        });
+      default:
+        return itemsArray;
+    }
+  }
 
   useEffect(() => {
     // Handler to call on window resize
@@ -155,14 +200,74 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
               </div>
               {/* Scrollable Grid Container */}
               <div className="w-full sm:w-1/2 flex flex-col p-5 h-full">
-                {/* Search Box */}
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => { setSearchTerm(e.target.value) }}
-                  placeholder="Search..."
-                  className="mb-4 p-2 rounded bg-gray-700 placeholder-gray-400"
-                />
+                <div className="flex flex-col sm:flex-row justify-center ">
+                  {/* Search Box */}
+                  <div className="flex flex-col justify-center grow">
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => { setSearchTerm(e.target.value) }}
+                      placeholder="Search..."
+                      className="mb-4 p-2 rounded bg-gray-700 placeholder-gray-400 "
+                    />
+                  </div>
+
+                  {/* Sort Button and Dropdown */}
+                  <div className="relative ml-2 flex justify-center mb-4 ">
+                    <button
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-400"
+                    >
+                      Sort
+                    </button>
+                    {/* Dropdown Menu */}
+                    {isDropdownOpen && (
+                      <div className="absolute top-full mt-1 py-2 w-48 bg-gray-700 rounded-md shadow-xl z-20 right-auto sm:right-0 transition ease-in-out duration-500">
+                        <p
+                          onClick={() => { setSortBy('name+'); setIsDropdownOpen(false) }}
+                          className="block px-4 py-2 text-sm sm:text-base hover:bg-gray-300 transition duration-500 ease-in-out"
+                        >
+                          Name (A-Z)
+                        </p>
+                        <p
+                          onClick={() => { setSortBy('name-'); setIsDropdownOpen(false) }}
+                          className="block px-4 py-2 text-sm sm:text-base hover:bg-gray-300 transition duration-500 ease-in-out"
+                        >
+                          Name (Z-A)
+                        </p>
+                        {!isChoosingWeapons &&
+                          <>
+                            <p
+                              onClick={() => { setSortBy('rarity+'); setIsDropdownOpen(false) }}
+                              className="block px-4 py-2 text-sm sm:text-base hover:bg-gray-300 transition duration-500 ease-in-out"
+                            >
+                              Rarity (Low to High)
+                            </p>
+                            <p
+                              onClick={() => { setSortBy('rarity-'); setIsDropdownOpen(false) }}
+                              className="block px-4 py-2 text-sm sm:text-base hover:bg-gray-300 transition duration-500 ease-in-out"
+                            >
+                              Rarity (High to Low)
+                            </p>
+                            <p
+                              onClick={() => { setSortBy('price+'); setIsDropdownOpen(false) }}
+                              className="block px-4 py-2 text-sm sm:text-base hover:bg-gray-300 transition duration-500 ease-in-out"
+                            >
+                              Price ( Low to High)
+                            </p>
+                            <p
+                              onClick={() => { setSortBy('price-'); setIsDropdownOpen(false) }}
+                              className="block px-4 py-2 text-sm sm:text-base hover:bg-gray-300 transition duration-500 ease-in-out"
+                            >
+                              Price (High to Low)
+                            </p>
+                          </>
+                        }
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className={`grid grid-rows-2 grid-flow-col max-w-3/5 sm:max-w-full sm:grid-flow-row sm:grid-rows-none sm:grid-cols-2 gap-2  place-content-start overflow-x-auto scrollbar-thin overflow-y-hidden sm:overflow-y-auto sm:overflow-x-hidden scrollbar-thumb-gray-900 scrollbar-track-gray-600 pr-2 max-w-full max-h-1/2 sm:min-h-65vh sm:max-h-65vh`}>
                   {isChoosingWeapons ? weaponChoices.filter((weapon) => {
                     return weapon.name_normalized.includes(searchTerm.replace(" ", "").toLowerCase());
@@ -171,11 +276,31 @@ export default function Modal({ item, showModal, onModalClose, setLoading, saveM
                       <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/300x300/`} alt={item.name} className="object-fillrounded-lg h-40" />
                       <p className="py-2 text-xs truncate text-semibold">{item.name}</p>
                     </div>
-                  )) : choices.filter((choice) => {
-                    return choice.name_normalized.includes(searchTerm.replace(" ", "").toLowerCase());
-                  }).map(item => {
+                  )) : generateOrder(
+                    choices.filter((choice) => {
+                      return choice.name_normalized.includes(searchTerm.replace(" ", "").toLowerCase());
+                    })
+                  ).map(item => {
                     return (
-                      <div key={item.classid} style={{ borderBottomColor: `#${item.rarity_color}` }} className="flex flex-col justify-center max-w-1/5 min-w-2/5 h-auto sm:min-w-fit max-h-45vw sm:max-h-30vh sm:max-w-full rounded-lg  items-center p-2 hover:bg-[#85877e] w-full border-b-2  border border-gray-700 transition duration-300 ease-in-out hover:scale-105 " onClick={() => changeItem(item)}>
+                      <div
+                        key={item.classid}
+                        style={{ borderBottomColor: `#${item.rarity_color}` }}
+                        className="relative flex flex-col justify-center max-w-1/5 min-w-2/5 h-auto sm:min-w-fit max-h-45vw sm:max-h-30vh sm:max-w-full rounded-lg items-center p-2 hover:bg-[#85877e] w-full border-b-2 border border-gray-700 transition duration-300 ease-in-out hover:scale-105"
+                        onClick={() => changeItem(item)}
+                      >
+                        {/* Wear text */}
+                        {
+                          item.wear_short &&
+                          <div className="absolute top-0 left-0 m-2 text-white text-sm font-semibold">
+                            {item.wear_short}
+                          </div>
+                        }
+
+                        {/* Price text */}
+                        <div className="absolute top-0 right-0 m-2 text-white text-sm font-semibold">
+                          {formatPrice(item.price)}
+                        </div>
+
                         <img src={`https://steamcommunity-a.akamaihd.net/economy/image/${item.icon_url}/300x300/`} alt={item.name} className="object-fill rounded-lg h-40" />
                         <p className="py-2 text-xs truncate text-semibold">{item.name}</p>
                       </div>
