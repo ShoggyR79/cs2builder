@@ -37,7 +37,8 @@ const weaponToCategoryMap = {
     'SCAR-20': 'highTier',
     'Negev': 'midTier',
     'M249': 'midTier',
-    'MAC-10': 'midTier'
+    'MAC-10': 'midTier',
+    'MP5-SD': 'midTier'
 };
 
 const sideUniqueWeapons = {
