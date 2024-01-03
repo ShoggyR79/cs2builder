@@ -78,7 +78,9 @@ const InventoryScreen = ({ setLoading, id }) => {
       setCurLoadout(state.tSide)
     }
     setTside(!tside);
-    setLoading(false);
+    setTimeout(()=>{
+      setLoading(false);
+    }, 300)
   }
 
   const openModal = (content, info) => {
@@ -94,12 +96,16 @@ const InventoryScreen = ({ setLoading, id }) => {
     setIsModalOpen(false);
   };
 
-  const calculateCost = () => {
+  const calculateCost = (curState = null) => {
     // TODO: calculate cost of both sides
     // make sure to avoid double counting items that are the same on both side (use map/set?)
+    if (curState === null) {
+      curState = state;
+    }
+
     let itemsSet = new Set();
     let totalCost = 0;
-    for(const [sideName, side] of Object.entries(state)){
+    for(const [_, side] of Object.entries(curState)){
       if(!itemsSet.has(side.startingPistol.classid)){
         itemsSet.add(side.startingPistol.classid);
         totalCost += Math.max(side.startingPistol.price, 0);
@@ -192,7 +198,7 @@ const InventoryScreen = ({ setLoading, id }) => {
         } else {
           setCurLoadout(data.ctSide)
         }
-        calculateCost();
+        calculateCost(data);
       } else {
         setIsErrorModalOpen(true);
       }
@@ -248,7 +254,7 @@ const InventoryScreen = ({ setLoading, id }) => {
               <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
 
               <div className="flex flex-col xl:flex-row justify-between items-center mt-4 ml-2 sm:ml-0">
-                <div className='w-full flex flex-col items-center xl:items-start space-y-3 mt-2 xl:mt-0 order-2 xl:order-1'>
+                <div className='w-full flex flex-col items-center xl:items-start space-y-3 mt-2 xl:mt-0 order-2 xl:order-1 xl:basis-9/12'>
                   <button onClick={() => { handleSaveAndShare() }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out w-full">
                     Save and Share
                   </button>
@@ -257,7 +263,8 @@ const InventoryScreen = ({ setLoading, id }) => {
                     <p className='text-lg text-white font-bold text-center xl:text-start'>{formatPrice(totalCost)}</p>
                   </div>
                 </div>
-                <div className='flex justify-center items-center w-full order-1 xl:order-2'>
+                <div className='xl:basis-1/12 xl:grow xl:order-2'></div>
+                <div className='flex justify-center xl:justify-end items-center w-full order-1 xl:order-3 xl:basis-2/12 xl:ml-2'>
                   <ToggleButton side={tside} onToggle={() => changeSide()} />
                 </div>
               </div>

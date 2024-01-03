@@ -13,6 +13,7 @@ module.exports = {
         '3/5': '60vw',
         '4/5': '80vw',
         '95vw': '95vw',
+        '5vw': '5vw',
       },
       maxHeight: {
         '1/4': '25vh',
@@ -35,6 +36,7 @@ module.exports = {
         '3/5': '60vw',
         '4/5': '80vw',
         '30vw': '30vw',
+        '5vw': '5vw',
       },
       minHeight: {
         '1/4': '25vh',

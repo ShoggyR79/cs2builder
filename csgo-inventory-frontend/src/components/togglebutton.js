@@ -8,8 +8,8 @@ const ToggleButton = ({ side, onToggle }) => {
 
     return (
         <div className='flex justify-center items-center'>
-            <div className='flex flex-row sm:flex-col items-center'>
-                <span className={`text-xl font-bold mb-3 sm:mb-0 text-white inline-flex items-center`}>
+            <div className='flex flex-row sm:flex-col items-center flex-grow sm:max-w-5vw sm:min-w-5vw'>
+                <span className={`text-lg font-bold mb-3 sm:mb-0 text-white inline-flex items-center`}>
                     {side ? 'T' : 'CT'} <span className='hidden sm:inline ml-1'>Loadout</span>
                 </span>
                 <label className="relative inline-flex items-center cursor-pointer ml-2 sm:ml-0 mt-0 sm:mt-2">
