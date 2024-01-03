@@ -223,7 +223,7 @@ const InventoryScreen = ({ setLoading, id }) => {
 
               <div className="mt-2 flex flex-col items-center sm:flex-row justify-center text-white underline text-xl font-bold cursor-pointer ml-2 sm:ml-0">
                 <p className="p-2 hover:text-green-300 text-center" onClick={() => setIsFeedbackModalOpen(true)}>Contact us</p>
-                <p className="p-2 hover:text-amber-800 text-center text-sm md:text-base" onClick={() => redirectToDefaultLoadout()}>Reset Loadout</p>
+                <p className="p-2 hover:text-amber-800 text-center text-sm md:text-xl" onClick={() => redirectToDefaultLoadout()}>Reset Loadout</p>
               </div>
               <div className="text-left text-gray-300 mt-4 hidden sm:block">
                 <p className='text-center'>Please adjust browser zoom to fit items</p>
