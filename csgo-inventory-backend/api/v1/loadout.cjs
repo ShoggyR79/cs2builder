@@ -274,7 +274,7 @@ module.exports = (app) => {
                 );
                 res.status(200).send(loadout.loadout_object);
             } else {
-                res.status(200).send({});
+                res.status(404).send({});
             }
             
         } catch (err) {

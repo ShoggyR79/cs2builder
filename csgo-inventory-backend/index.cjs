@@ -15,8 +15,9 @@ const app = express();
 const port = config.port || 3001;
 
 // Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
+
 
 // Connect to MongoDB using the URI from config
 mongoose.connect(config.mongodb)

@@ -14,7 +14,7 @@ import { FeedbackModal } from './feedbackModal.js';
 
 
 const InventoryGrid = styled.div.attrs(() => ({
-  className: "w-full grid grid-cols-2 gap-1 sm:gap-4 p-2 grid-rows-2 sm:grid-cols-4 sm:grid-rows-1",
+  className: "w-full grid gap-1 sm:gap-4 p-2 grid-cols-2 grid-rows-2 sm:grid-cols-4 sm:grid-rows-1",
 }))`
   // Add custom styles if needed
 `;
@@ -39,6 +39,7 @@ const InventoryScreen = ({ setLoading, id }) => {
   const [link, setLink] = useState('');
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [toggleReset, setToggleReset] = useState(false);
   const [errorMsg, setErrorMsg] = useState('Cannot find loadout with the given ID, redirecting to default loadout.');
 
   const handleSaveAndShare = () => {
@@ -50,19 +51,20 @@ const InventoryScreen = ({ setLoading, id }) => {
       },
       body: JSON.stringify(state)
     })
-    .then(res => res.json())
-    .then(
-      (result) => {
-        const generatedLink = `http://cs2builder.com?id=${result.loadout_id}`;
-        setLink(generatedLink);
-        setIsOptionsModalOpen(false);
-        setIsLinkModalOpen(true);
-      }
-    );
+      .then(res => res.json())
+      .then(
+        (result) => {
+          const generatedLink = `http://cs2builder.com?id=${result.loadout_id}`;
+          setLink(generatedLink);
+          setIsOptionsModalOpen(false);
+          setIsLinkModalOpen(true);
+        }
+      );
   };
 
   const redirectToDefaultLoadout = () => {
     setIsErrorModalOpen(false);
+    setToggleReset(!toggleReset);
     navigate('/');
   };
 
@@ -123,117 +125,106 @@ const InventoryScreen = ({ setLoading, id }) => {
   }
 
   useEffect(() => {
-    setLoading(true);
-    let api_link = `/v1/loadout/default`;
-    // TODO: Add endpoint. no endpoint for now
-    if ( id ){
-      api_link = `/v1/loadout/save/${id}`;
-    }
-    fetch(api_link)
-      .then(res => 
-          res.json()
-      )
-      .then(
-        async (result) => {
-          // Funky way to handle this ...
-          // Empty json = not found
-          if(Object.keys(result).length === 0){
-            result = await fetch(`/v1/loadout/default`);
-            result = await result.json();
-            redirectToDefaultLoadout();
-          }
-          console.log(result)
-          setState(result)
-          if (tside) {
-            setCurLoadout(result.tSide)
-          } else {
-            setCurLoadout(result.ctSide)
-          }
-          setLoading(false);
-        },
-        (error) => {
-          console.log(error)
-          setLoading(false);
-          setErrorMsg(error.message);
-          setIsErrorModalOpen(true);          
+    const fetchLoadout = async () => {
+      let api_link = `/v1/loadout/default`;
+      if (id) {
+        api_link = `/v1/loadout/save/${id}`;
+      }
+      const response = await fetch(api_link);
+      if (response.ok) {
+        const data = await response.json();
+        setState(data);
+        if (tside) {
+          setCurLoadout(data.tSide)
+        } else {
+          setCurLoadout(data.ctSide)
         }
-      )
+      } else {
+        setIsErrorModalOpen(true);
+      }
+    }
+
+    setLoading(true);
+    fetchLoadout();
+    setLoading(false);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [id, toggleReset])
 
 
   return (
-    state && curLoadout &&
-    <div className={"w-3/4 p-4 my-10 rounded-lg shadow-lg overflow-y-auto scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-gray-600 " + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
+    <>
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        content={errorMsg}
+        onClose={redirectToDefaultLoadout}
+        onConfirm={redirectToDefaultLoadout}
+      />
+      {state && curLoadout &&
+      <div className={"w-11/12 sm:w-3/4 p-4 my-4 sm:my-10 rounded-lg shadow-lg overflow-y-auto scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-gray-600 " + (tside ? ' bg-[#554b2b]' : ' bg-[#304359]')}>
 
-      <InventoryGrid>
-        <InventoryColumn>
-          <div className="text-white text-xl font-bold p-2">Pistols</div>
-          <Item tside={tside} item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol, { tier: 'startingPistol', index: -1 })} />
-          {curLoadout.pistols.map((item, index) => {
-            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'pistols', index: index })} />
-          })}
-        </InventoryColumn>
-        <InventoryColumn>
-          <div className="text-white text-xl font-bold p-2">Mid Tier</div>
-          {curLoadout.midTier.map((item, index) => {
-            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'midTier', index: index })} />
-          })}
-        </InventoryColumn>
-        <InventoryColumn>
-          <div className="text-white text-xl font-bold p-2">High Tier</div>
-          {curLoadout.highTier.map((item, index) => {
-            return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'highTier', index: index })} />
-          })}
-        </InventoryColumn>
-        <InventoryColumn>
-          <div className="text-white text-xl font-bold p-2">Knife</div>
+        <InventoryGrid>
+          <InventoryColumn>
+            <div className="text-white text-xl font-bold p-2">Pistols</div>
+            <Item tside={tside} item={curLoadout.startingPistol} onClick={() => openModal(curLoadout.startingPistol, { tier: 'startingPistol', index: -1 })} />
+            {curLoadout.pistols.map((item, index) => {
+              return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'pistols', index: index })} />
+            })}
+          </InventoryColumn>
+          <InventoryColumn>
+            <div className="text-white text-xl font-bold p-2">Mid Tier</div>
+            {curLoadout.midTier.map((item, index) => {
+              return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'midTier', index: index })} />
+            })}
+          </InventoryColumn>
+          <InventoryColumn>
+            <div className="text-white text-xl font-bold p-2">High Tier</div>
+            {curLoadout.highTier.map((item, index) => {
+              return <Item tside={tside} key={item.classid} item={item} onClick={() => openModal(item, { tier: 'highTier', index: index })} />
+            })}
+          </InventoryColumn>
+          <InventoryColumn>
+            <div className="text-white text-xl font-bold p-2">Knife</div>
 
-          <Knife tside={tside} item={curLoadout.knife} onClick={() => openModal(curLoadout.knife, { tier: 'knife', index: -1 })} />
-          <div className="p-2 text-white text-xl font-bold p-2">Gloves</div>
+            <Knife tside={tside} item={curLoadout.knife} onClick={() => openModal(curLoadout.knife, { tier: 'knife', index: -1 })} />
+            <div className="p-2 text-white text-xl font-bold px-2 py-1">Gloves</div>
 
-          <Knife tside={tside} item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves, { tier: 'gloves', index: -1 })} />
-          <div className="p-2 text-white text-xl font-bold p-2">Agent</div>
-          <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
+            <Knife tside={tside} item={curLoadout.gloves} onClick={() => openModal(curLoadout.gloves, { tier: 'gloves', index: -1 })} />
+            <div className="p-2 text-white text-xl font-bold px-2 py-1">Agent</div>
+            <Item tside={tside} item={curLoadout.agent} onClick={() => openModal(curLoadout.agent, { tier: 'agent', index: -1 })} />
 
-          <div className="flex flex-col sm:flex-row justify-between items-start mt-4">
-            <ToggleButton side={tside} onToggle={() => changeSide()} />
-            <button onClick={() => { handleSaveAndShare() }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 sm:py-2 sm:px-4 rounded sm:ml-2">
-              Save and Share
-            </button>
-          </div>
-          <div className="mt-2 text-white underline text-xl font-bold cursor-pointer" onClick={() => setIsFeedbackModalOpen(true)}>
-            Contact us
-          </div>
-          <div className="text-left text-gray-300 mt-4 hidden sm:block">
-            <p>If a scrollbar appears to the right, please adjust your browser zoom.</p>
-          </div>
-        </InventoryColumn>
-        <PickerModal tside={tside} item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />
-        <OptionsModal
-          isOpen={isOptionsModalOpen}
-          onClose={() => setIsOptionsModalOpen(false)}
-          onSaveAndShare={handleSaveAndShare}
-        />
+            <div className="flex flex-col sm:flex-row justify-between items-start mt-4 ml-2 sm:ml-0">
+              <ToggleButton side={tside} onToggle={() => changeSide()} />
+              <button onClick={() => { handleSaveAndShare() }} className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 sm:py-2 sm:px-4 rounded sm:ml-2">
+                Save and Share
+              </button>
+            </div>
+            <div className="mt-2 flex flex-col sm:flex-row justify-center text-white underline text-xl font-bold cursor-pointer ml-2 sm:ml-0" >
+              <p className="sm:p-2 hover:text-green-300" onClick={() => setIsFeedbackModalOpen(true)}>Contact us</p> <p className="sm:p-2 hover:text-amber-800"  onClick={() => redirectToDefaultLoadout()}>Reset Loadout</p>
+            </div>
+            <div className="text-left text-gray-300 mt-4 hidden sm:block">
+              <p>If a scrollbar appears to the right, please adjust your browser zoom.</p>
+            </div>
+          </InventoryColumn>
+          <PickerModal tside={tside} item={modalContent} showModal={isModalOpen} onModalClose={closeModal} setLoading={setLoading} saveModal={saveModal} side={tside} />
+          <OptionsModal
+            isOpen={isOptionsModalOpen}
+            onClose={() => setIsOptionsModalOpen(false)}
+            onSaveAndShare={handleSaveAndShare}
+          />
 
-        <LinkModal
-          isOpen={isLinkModalOpen}
-          link={link}
-          onClose={() => setIsLinkModalOpen(false)}
-        />
-        <ErrorModal
-          isOpen={isErrorModalOpen}
-          content={errorMsg}
-          onClose={redirectToDefaultLoadout}
-          onConfirm={redirectToDefaultLoadout}
-        />
-        <FeedbackModal
-          isOpen={isFeedbackModalOpen}
-          onClose={()=> {setIsFeedbackModalOpen(false)}}
-        />
-      </InventoryGrid>
-    </div>
-
+          <LinkModal
+            isOpen={isLinkModalOpen}
+            link={link}
+            onClose={() => setIsLinkModalOpen(false)}
+          />
+          <FeedbackModal
+            isOpen={isFeedbackModalOpen}
+            onClose={() => { setIsFeedbackModalOpen(false) }}
+          />
+        </InventoryGrid>
+      </div>}
+    </>
   );
 };
 
