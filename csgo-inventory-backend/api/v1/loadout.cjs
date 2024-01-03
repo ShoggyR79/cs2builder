@@ -36,7 +36,8 @@ const weaponToCategoryMap = {
     'G3SG1': 'highTier',
     'SCAR-20': 'highTier',
     'Negev': 'midTier',
-    'M249': 'midTier'
+    'M249': 'midTier',
+    'MAC-10': 'midTier'
 };
 
 const sideUniqueWeapons = {
@@ -56,7 +57,8 @@ const sideUniqueWeapons = {
     'AUG': 'CT',
     'SG 553': 'T',
     'G3SG1': 'T',
-    'SCAR-20': 'CT'
+    'SCAR-20': 'CT',
+    'MAC-10': 'T'
 }
 
 function generateID() {
