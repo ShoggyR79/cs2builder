@@ -132,12 +132,15 @@ const updateDb = async () => {
             }else{
                 data['rarity_score'] = 0;
             }
-            if(!('price' in it)){
+
+            if(it['rarity'] === 'Stock'){
+                data['price'] = 0;
+            }else if(!('price' in it) || !('7_days' in it['price'])){
                 data['price'] = -1;
             } else {
-                for(const [k, v] of Object.entries(it['price'])){
-                    data['price'] = v['average'];
-                    break;
+                data['price'] = it['price']['7_days']['average'];
+                if(data['price'] === 0){
+                    data['price'] = -1;
                 }
             }
             data['last_updated'] = Date.now();
